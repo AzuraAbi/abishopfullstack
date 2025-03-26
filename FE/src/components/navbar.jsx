@@ -1,56 +1,43 @@
-import { Search } from "react-ionicons"
-import "./Navbar.css"
-import logo from "../assets/abu.webp"
+import "./navbar.css"
+import { Link } from "react-router-dom";
+import { IonIcon } from "@ionic/react";
+import { search, menu, personCircle } from "ionicons/icons";
+
 
 function Navbar() {
   return (
     <nav className="navbar">
-        <div className="navbar-content">
-            <div className="navbar-logo navbar-item">
-                <a href="home.html">
-                    <img src={logo} alt="" />
-                    <span> Abi Shop</span>
-                </a>
-            </div>
+      <div className="navbar__content">
+        <Link to="/home" className="nav__logo">
+          <div className="nav__logo-img"></div>
+          <div className="nav__logo-text">Abi Shop</div>
+        </Link>
 
-            <div className="navbar-search navbar-item">
-                <div className="searchbar">
-                    <input type="text" className="search-input" placeholder="Nhập từ khóa..." />
-                    <div className="search-btn"><Search className=""/></div>
-                </div>
-            </div>
-
-            <div className="navbar-category navbar-item">
-                <div className="category-button">
-                    <ion-icon name="menu"></ion-icon> Danh mục
-                </div>
-            </div>
-
-            <div className="navbar-account navbar-item">
-                <div className="user-btn">
-                    <span className="user-name">Guest</span>
-                    <ion-icon name="person-circle"></ion-icon>
-                </div>
-
-                <div className="user-dropdown">
-                    <div className="nologin navbar-account-drop">
-                        <ul>
-                            <li className="open-login">Đăng nhập</li>
-                            <li className="open-reg">Đăng ký</li>
-                        </ul>
-                    </div>
-
-                    <div className="logged navbar-account-drop">
-                        <ul>
-                            <li className="taikhoan-btn">Tài khoản</li>
-                            <li className="giohang-btn">Giỏ hàng</li>
-                            <li className="settings-btn">Cài đặt</li>
-                            <li className="logout-btn">Đăng xuất</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <div className="nav__searchbar">
+          <div className="searchbar__container">
+            <input type="text" placeholder="Nhập từ khóa..." className="__search-input" />
+            <div className="__search-icon"><IonIcon icon={search}></IonIcon></div>
+          </div>
         </div>
+
+        <div className="nav__danhmuc">
+          <div className="danhmuc__container">
+            <div className="danhmuc__button"><IonIcon className="icon" icon={menu}></IonIcon>Danh mục</div>
+          </div>
+          <div className="danhmuc__dropbox">
+
+          </div>
+        </div>
+
+        <div className="nav__account">
+          <div className="account__container">
+            <div className="account__button">
+              <span className="account__username">Azura Abi</span>
+              <IonIcon className="icon" icon={personCircle}></IonIcon>
+            </div>
+          </div>
+        </div>
+      </div>
     </nav>
   );
 }
