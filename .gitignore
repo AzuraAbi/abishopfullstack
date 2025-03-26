@@ -26,4 +26,3 @@ BE/.env
 *.sw?
 
 FE/node_modules
-FE/.env
