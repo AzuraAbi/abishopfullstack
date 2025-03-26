@@ -15,7 +15,9 @@
     --main-hover-color: rgb(255, 131, 82);
     --body-color: rgb(231, 231, 231);
     --content-color: rgb(255, 255, 255);
-    --shadow: 0 0 3px 1px var(--main-color);
+    --shadow: 0 0 2px 1px black;
+    --error-color: rgb(255 , 85, 85);
+    --login-error-shadow: 0 0 2px 1px rgb(255, 85, 85);
 }
 
 input:focus {
@@ -46,6 +48,7 @@ body {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: var(--shadow);
+    margin-top: 50px;
 }
 
 .login__container .login__title {
@@ -74,11 +77,112 @@ body {
 .login__form form .login__form-input {
     width: 100%;
     height: 45px;
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
-.login__form-input input {
+.login__form-input .input-main {
     width: 100%;
     height: 100%;
     text-indent: 10px;
+    border: 1px solid gray;
+    background: content-box;
+    color: black;
+    font-size: 1rem;
+    transition: .3s ease;
+}
+
+.login__form-input .input-main:focus {
+    box-shadow: var(--shadow);
+}
+
+.login__form form .login-error {
+    color: var(--error-color);
+    width: 100%;
+    text-align: left;
+    font-size: .8rem;
+    margin-top: .3rem;
+    opacity: 0;
+}
+
+.login__form form .login__form-submit {
+    width: 100%;
+    height: 45px;
+    background: var(--main-color);
+    color: white;
+    font-size: 1.1rem;
+    margin-top: .8rem;
+    transition: .3s ease;
+}
+
+.login__form form .login__form-submit:hover {
+    background: var(--main-hover-color);
+}
+
+.login__container .login__stuff {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: .4rem;
+}
+
+.login__stuff .login__forgot-password {
+    width: 100%;
+    position: relative;
+}
+
+.login__forgot-password .__forgot-password-text {
+    width: 100%;
+    text-align: left;
+    color: var(--main-color);
+    font-size: .9rem;
+    transition: .3s ease;
+}
+
+.login__forgot-password .__forgot-password-text:hover {
+    color: var(--main-hover-color);
+}
+
+.login__form-password {
+    position: relative;
+    display: flex;
+}
+
+.login__form-password #login-password-check {
+    display: none;
+}
+
+.login__form-password .login-password-toggle {
+    position: absolute;
+    color: var(--main-color);
+    font-size: 1.5rem;
+    height: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    right: .3rem;
+    transition: .3s ease;
+}
+
+.login__form-password .login-password-toggle:hover {
+    color: var(--main-hover-color);
+}
+
+.login__stuff .login__to-register {
+    width: 80%;
+    color: black;
+    font-size: .9rem;
+    margin-top: 1.5rem;
+    margin-bottom: .3rem;
+}
+
+.login__to-register .login__to-register-button {
+    color: var(--main-color);
+    transition: .3s ease;
+}
+
+.login__to-register .login__to-register-button:hover {
+    color: var(--main-hover-color);
 }

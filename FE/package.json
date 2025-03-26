@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@ionic/react": "^8.5.1",
+    "axios": "^1.8.4",
     "ionicons": "^7.4.0",
+    "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-ionicons": "^4.2.1",
