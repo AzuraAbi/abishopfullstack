@@ -12,6 +12,7 @@ function Login() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [errors, setErrors] = useState({ username: false, password: false })
+    const [logError, setLogError] = useState(false)
     const [serverError, setServerError] = useState("")
     const navigate = useNavigate()
 
@@ -23,6 +24,9 @@ function Login() {
         if (!username) newErrors.username = true;
         if (!password) newErrors.password = true;
 
+        let newLogErr = false
+
+        setLogError(newLogErr)
         setErrors(newErrors);
 
         if (newErrors.username || newErrors.password) return;
@@ -31,8 +35,8 @@ function Login() {
         if (result.success) {
           navigate("/");
         } else {
-            console.log('error')
-          setErrors(result.message);
+            setLogError(true)
+            setErrors(result.message);
         }
     }
 
@@ -44,6 +48,12 @@ function Login() {
             <div className="login-page">
                 <div className="login__container">
                     <h2 className="login__title">Đăng nhập</h2>
+                        <span 
+                            className="__form-login-error"
+                            style={{ opacity: logError.value ? 1 : 0}}
+                        >
+                            Tài khoản hoặc mật khẩu không chính xác
+                        </span>
                     <div className="login__form">
                         <form onSubmit={handleLogin}>
                             <div className="login__form-input">

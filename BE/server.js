@@ -24,7 +24,8 @@ app.get("/", (req, res) => {
 
 app.get("/api/user/:id", (req, res) => {
     const userId = req.params.id;
-    const sql = "SELECT id, username FROM users WHERE id = ?";
+    console.log(userId)
+    const sql = "SELECT username FROM users WHERE userid = ?";
 
     db.query(sql, [userId], (err, results) => {
         if (err) return res.status(500).json({ error: "Lỗi server" });
@@ -50,7 +51,7 @@ app.post("/api/login", (req, res) => {
             const user = result[0]
             const token = jwt.sign(
                 {
-                    id: user.id,
+                    id: user.userid,
                 },
                 SECRET_KEY,
                 { expiresIn: "1h" }
@@ -60,7 +61,7 @@ app.post("/api/login", (req, res) => {
                 success: true,
                 token,
                 user: {
-                    id: user.id,
+                    id: user.userid,
                 }
             });
         } else {

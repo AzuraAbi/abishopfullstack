@@ -1,6 +1,18 @@
-function Home() {
-    return <h1>register Page</h1>;
-  }
-  
-  export default Home;
-  
+import Navbar from "../components/navbar";
+import "../styles/register.css"
+
+function Register() {
+  return (
+    <>
+      <Navbar />
+
+      <div className="register-page">
+        <div className="register__container">
+
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default Register;

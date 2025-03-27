@@ -10,18 +10,12 @@ function Navbar() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const storedToken = localStorage.getItem("userToken");
     const storedUser = localStorage.getItem("userData");
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem("usertoken");
     if(storedToken) {
       try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(storedToken);
 
         fetch(`http://localhost:5000/api/user/${decoded.id}`)
                 .then(res => res.json())
@@ -34,6 +28,10 @@ function Navbar() {
       } catch (error) {
         console.error("Lỗi giải mã token:", error);
       }
+    }
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
