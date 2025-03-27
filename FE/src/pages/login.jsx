@@ -14,6 +14,7 @@ function Login() {
     const [errors, setErrors] = useState({ username: false, password: false })
     const [logError, setLogError] = useState(false)
     const [serverError, setServerError] = useState("")
+    const [passcheck, setPasscheck] = useState(false)
     const navigate = useNavigate()
 
     const handleLogin = async(e) => {
@@ -74,7 +75,7 @@ function Login() {
                             </span>
                             <div className="login__form-input login__form-password">
                                 <input 
-                                    type="password" 
+                                    type={passcheck ? "text" : "password"}
                                     className="input-main" 
                                     placeholder="Mật khẩu" 
                                     autoComplete="off" 
@@ -82,8 +83,19 @@ function Login() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
-                                <label htmlFor="login-password-eye" className="login-password-toggle"><IonIcon icon={eye}></IonIcon></label>
-                                <input type="checkbox" name="login-password-eye" id="login-password-check" />
+                                <label htmlFor="login-password-check" className="login-password-toggle">
+                                    {passcheck ? <IonIcon icon={eyeOff}></IonIcon>: <IonIcon icon={eye}></IonIcon>}
+                                    
+                                </label>
+                                <input 
+                                    type="checkbox" 
+                                    name="login-password-eye" 
+                                    id="login-password-check" 
+                                    checked={passcheck}
+                                    onChange={() => {
+                                        setPasscheck(!passcheck)
+                                    }}
+                                />
                             </div>
                             <span 
                                 className="login-error"

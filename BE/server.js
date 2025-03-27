@@ -89,7 +89,7 @@ app.post("/api/login", (req, res) => {
                 {
                     id: user.userid,
                 },
-                SECRET_KEY,
+                SECRET_KEY, 
                 { expiresIn: "1h" }
             )
 

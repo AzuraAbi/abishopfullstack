@@ -20,7 +20,6 @@
     --register-error-shadow: 0 0 2px 1px rgb(255, 85, 85);
 }
 
-
 input:focus {
     outline: none;
 }

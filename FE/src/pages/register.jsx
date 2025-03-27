@@ -16,6 +16,9 @@ function Register() {
 
   const [serverError, setServerError] = useState("")
 
+  const [passcheck, setPasscheck] = useState(false)
+  const [cfpasscheck, setcfPasscheck] = useState(false)
+
   const [errors, setErrors] = useState({
     username: false,
     email: false,
@@ -132,7 +135,7 @@ function Register() {
               </span>
               <div className="register__form-input reg-form__password">
                 <input
-                  type="password"
+                  type={passcheck ? "text" : "password"}
                   className="reg-input"
                   placeholder="Mật khẩu"
                   autoComplete="off"
@@ -140,8 +143,20 @@ function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <label htmlFor="reg-pass-eye" className="reg-pass-toggle"><IonIcon icon={eye}></IonIcon></label>
-                <input type="checkbox" className="reg-pass-check" name="reg-pass-eye" id="reg-pass-eye" />
+                <label htmlFor="reg-pass-eye" className="reg-pass-toggle">
+                  {passcheck ? <IonIcon icon={eyeOff}></IonIcon> : <IonIcon icon={eye}></IonIcon>}
+                  
+                </label>
+                <input 
+                  type="checkbox" 
+                  className="reg-pass-check" 
+                  name="reg-pass-eye" 
+                  id="reg-pass-eye"
+                  checked={passcheck}
+                  onChange={() => {
+                    setPasscheck(!passcheck)
+                  }}
+                />
               </div>
               <span
                 className="register-error"
@@ -151,7 +166,7 @@ function Register() {
               </span>
               <div className="register__form-input reg-form__password">
                 <input
-                  type="password"
+                  type={cfpasscheck ? "text" : "password"}
                   className="reg-input"
                   placeholder="Xác nhận mật khẩu"
                   autoComplete="off"
@@ -159,8 +174,18 @@ function Register() {
                   value={cfpassword}
                   onChange={(e) => setCfpassword(e.target.value)}
                 />
-                <label htmlFor="reg-cf-pass-eye" className="reg-pass-toggle"><IonIcon icon={eye}></IonIcon></label>
-                <input type="checkbox" className="reg-pass-check" name="reg-cf-pass-eye" id="reg-cf-pass-eye" />
+                <label htmlFor="reg-cf-pass-eye" className="reg-pass-toggle">
+                  {cfpasscheck ? <IonIcon icon={eyeOff}></IonIcon> : <IonIcon icon={eye}></IonIcon>}
+                  
+                </label>
+                <input 
+                  type="checkbox"
+                  className="reg-pass-check" 
+                  name="reg--cf-pass-eye" 
+                  id="reg-cf-pass-eye" 
+                  checked={cfpasscheck}
+                  onChange={() => setcfPasscheck(!cfpasscheck)}
+                />
 
               </div>
               <span
