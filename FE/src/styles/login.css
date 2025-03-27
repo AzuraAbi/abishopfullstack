@@ -101,6 +101,7 @@ body {
     font-size: .8rem;
     margin-top: .3rem;
     opacity: 0;
+    user-select: none;
 }
 
 .login__form form .login__form-submit {
@@ -111,6 +112,7 @@ body {
     font-size: 1.1rem;
     margin-top: .8rem;
     transition: .3s ease;
+    user-select: none;
 }
 
 .login__form form .login__form-submit:hover {
@@ -163,6 +165,7 @@ body {
     margin-top: 1px;
     right: .3rem;
     transition: .3s ease;
+    user-select: none;
 }
 
 .login__form-password .login-password-toggle:hover {
@@ -195,4 +198,5 @@ body {
     justify-content: center;
     font-size: .9rem;
     opacity: 0;
+    user-select: none;
 }

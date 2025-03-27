@@ -50,7 +50,7 @@ function Login() {
                     <h2 className="login__title">Đăng nhập</h2>
                         <span 
                             className="__form-login-error"
-                            style={{ opacity: logError.value ? 1 : 0}}
+                            style={{ opacity: logError ? 1 : 0}}
                         >
                             Tài khoản hoặc mật khẩu không chính xác
                         </span>

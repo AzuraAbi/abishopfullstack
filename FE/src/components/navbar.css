@@ -177,9 +177,13 @@
 }
 
 .account__button .account__username {
+    background: red;
+    width: 100px;
     font-size: 1rem;
     margin-right: 5px;
     user-select: none;
+    white-space: nowrap;
+    text-overflow:clip;
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {

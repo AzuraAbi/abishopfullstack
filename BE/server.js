@@ -35,7 +35,43 @@ app.get("/api/user/:id", (req, res) => {
     });
 });
 
+app.post("/api/register", async (req, res) => {
+    const { username, email, phone, password } = req.body
 
+    const query_email = "SELECT * FROM users WHERE email = ?"
+    const query_phone = "SELECT * FROM users WHERE phone = ?"
+    const query = "INSERT INTO users (username, email, phone, password) VALUE (?, ?, ?, ?)"
+
+    try {
+        const [existingEmail] = await db.promise().query(query_email, [email])
+    
+        if(existingEmail.length > 0) {
+            return res.json({
+                success: false,
+                msg: "Email đã tồn tại"
+            })
+        }
+
+        const [existingPhone] = await db.promise().query(query_phone, [phone])
+
+        if(existingPhone.length > 0) {
+            return res.json({
+                success: false,
+                msg: "Số điện thoại đã tồn tại"
+            })
+        }
+
+        await db.promise().query(query, [username, email, phone, password])
+
+        res.json({
+            success: true,
+            msg: "Đăng ký thành công"
+        })
+
+    } catch(error) {
+        res.status(500).json({ message: "Lỗi server", error });
+    }
+})
 
 app.post("/api/login", (req, res) => {
     const { username, password } = req.body
