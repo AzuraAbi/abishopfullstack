@@ -49,7 +49,11 @@ function Navbar() {
   }, []);
 
   const handleInfo = () => {
-
+    if(localStorage.getItem("userToken")) {
+      navigate("/accountinfo")
+    } else {
+      navigate("/login")
+    }
   }
 
   const handleCart = () => {
@@ -64,7 +68,7 @@ function Navbar() {
     localStorage.removeItem("userToken")
     localStorage.removeItem("userData")
     setUser(null)
-    window.location.reload()
+    navigate("/")
   }
 
   const handleToLogin = () => {
@@ -73,10 +77,6 @@ function Navbar() {
   
   const handleToRegister = () => {
     navigate("/register")
-  }
-
-  const handleHover = () => {
-
   }
 
   return (
@@ -117,7 +117,7 @@ function Navbar() {
           >
             {user ? 
               <>
-                <button className="account__dropbox-item" onClick={handleInfo}>Thông tin</button>
+                <button className="account__dropbox-item" onClick={handleInfo}>Tài khoản</button>
                 <button className="account__dropbox-item" onClick={handleCart}>Giỏ hàng</button>
                 <button className="account__dropbox-item" onClick={handleSettings}>Cài đặt</button>
                 <button className="account__dropbox-item" onClick={handleLogout}>Đăng xuất</button>

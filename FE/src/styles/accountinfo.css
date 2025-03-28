@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: "Varela Round", sans-serif;
+    text-decoration: none;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --main-color: rgb(255, 103, 42);
+    --main-hover-color: rgb(255, 131, 82);
+    --body-color: rgb(231, 231, 231);
+    --content-color: rgb(255, 255, 255);
+    --shadow: 0 0 5px 1px black;
+}
+
+input:focus {
+    outline: none;
+}
+
+body {
+    background: var(--body-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.accountinfo {
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.accountinfo .accountinfo__container {
+    background: var(--content-color);
+    width: 70%;
+    box-shadow: var(--shadow);
+    display: flex;
+}
+
+.accountinfo__container .accountinfo__content {
+    width: 75%;
+    background: var(--content-color);
+    border-left: 2px solid gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.accountinfo__content .accountinfo__title {
+    color: gray;
+    font-size: 1.5rem;
+    width: 100%;
+    text-indent: 1rem;
+    margin-top: 0.7rem;
+}
+
+.accountinfo__content .accountinfo__info {
+    margin-top: 2rem;
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid gray;
+}
+
+.accountinfo__info .info__username {
+    color: black;
+    width: 100%;
+    text-indent: .8rem;
+    margin: .5rem 0;
+}

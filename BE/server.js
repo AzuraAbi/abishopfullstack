@@ -118,4 +118,23 @@ app.get("/danhmuc", (req, res) => {
     })
 })
 
+
+app.get("/getUsername/:id", (req, res) => {
+    const userId = req.params.id;
+    console.log(userId)
+    const query = "SELECT * FROM users WHERE userid = ?"
+
+    db.query(query, [userId], (err, result) => {
+        if(err) {
+            return res.status(500).json({ status: false });
+        }
+        if (result.length === 0) return res.status(404).json({ status: false });
+
+        res.json({
+            status: true,
+            username: result[0].username
+        })
+    })
+})
+
 app.listen(PORT, () => console.log(`🚀 Server chạy tại http://localhost:${PORT}`))
