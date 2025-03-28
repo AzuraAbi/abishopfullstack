@@ -6,16 +6,40 @@ function Home() {
         <>
             <Navbar />
 
-            <div className="banners">
-                <div className="banners__left">
+            <div className="danhmuc">
+                <h2 className="danhmuc__title">DANH MỤC</h2>
+                <div className="danhmuc__content">
+                    <div className="danhmuc__container">
+                        <div className="danhmuc__items">
+                            <div className="danhmuc__items-image"></div>
+                            <span className="danhmuc__items-text">THỜI TRANG NAM</span>
+                        </div>
+                        <div className="danhmuc__items">
+                            <div className="danhmuc__items-image"></div>
+                            <span className="danhmuc__items-text">THỜI TRANG NAM</span>
+                        </div>
+                        <div className="danhmuc__items">
+                            <div className="danhmuc__items-image"></div>
+                            <span className="danhmuc__items-text">THỜI TRANG NAM</span>
+                        </div>
+                        <div className="danhmuc__items">
+                            <div className="danhmuc__items-image"></div>
+                            <span className="danhmuc__items-text">THỜI TRANG NAM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                </div>
-                <div className="banners__middle">
+            <div className="flashsale">
 
-                </div>
-                <div className="banners__right">
-                    
-                </div>
+            </div>
+
+            <div className="voucher">
+
+            </div>
+
+            <div className="goiysanpham">
+
             </div>
         </>
     )
