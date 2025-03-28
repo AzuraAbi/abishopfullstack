@@ -49,15 +49,16 @@ body {
 }
 
 .danhmuc .danhmuc__content {
-    width: 100%;
+    width: 97.5%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow: hidden;
 }
 
 .danhmuc__content .danhmuc__container {
     margin-top: 1rem;
-    width: 97.5%;
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     grid-auto-flow: column;
@@ -107,4 +108,37 @@ body {
     bottom: .1rem;
     transition: .3s ease;
     opacity: 0;
+    user-select: none;
+}
+
+.flashsale {
+    background: var(--body-color);
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.flashsale .flashsale__container {
+    background: var(--content-color);
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.flashsale__container .flashsale__title {
+    width: 100%;
+    text-align: left;
+    margin-top: .7rem;
+    text-indent: 1rem;
+    font-size: 2rem;
+    color: var(--main-color);
+    user-select: none;
+}
+
+.flashsale__content {
+    width: 90%;
 }
