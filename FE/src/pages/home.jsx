@@ -1,7 +1,20 @@
 import Navbar from "../components/navbar";
 import "../styles/home.css"
+import { useEffect, useState } from "react";
+import axios from "axios"
 
 function Home() {
+    const [danhMucList, setDanhMucList] = useState([]);
+
+    useEffect(() => {
+        axios.get("http://localhost:5000/danhmuc")
+            .then((response) => {
+                setDanhMucList(response.data);
+            })
+            .catch((error) => console.error("Lỗi khi lấy danh mục:", error));
+    }, []);
+
+
     return (
         <>
             <Navbar />
@@ -10,22 +23,13 @@ function Home() {
                 <h2 className="danhmuc__title">DANH MỤC</h2>
                 <div className="danhmuc__content">
                     <div className="danhmuc__container">
-                        <div className="danhmuc__items">
-                            <div className="danhmuc__items-image"></div>
-                            <span className="danhmuc__items-text">THỜI TRANG NAM</span>
-                        </div>
-                        <div className="danhmuc__items">
-                            <div className="danhmuc__items-image"></div>
-                            <span className="danhmuc__items-text">THỜI TRANG NAM</span>
-                        </div>
-                        <div className="danhmuc__items">
-                            <div className="danhmuc__items-image"></div>
-                            <span className="danhmuc__items-text">THỜI TRANG NAM</span>
-                        </div>
-                        <div className="danhmuc__items">
-                            <div className="danhmuc__items-image"></div>
-                            <span className="danhmuc__items-text">THỜI TRANG NAM</span>
-                        </div>
+
+                        {danhMucList.map((danhmuc) => {
+                            return <div className="danhmuc__items" key={danhmuc.idDanhmuc}>
+                                <div className="danhmuc__items-image" style={{ backgroundImage: `url(../../${danhmuc.idDanhmuc}.webp)`}}></div>
+                                <span className="danhmuc__items-text">{danhmuc.tenDanhmuc}</span>
+                            </div>
+                        })}
                     </div>
                 </div>
             </div>

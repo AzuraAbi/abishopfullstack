@@ -57,7 +57,7 @@ body {
 
 .danhmuc__content .danhmuc__container {
     margin-top: 1rem;
-    width: 95%;
+    width: 97.5%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     grid-auto-flow: column;
@@ -76,7 +76,7 @@ body {
 }
 
 .danhmuc__items:hover .danhmuc__items-image {
-    transform: scale(1.07);
+    transform: scale(1.05);
 }
 
 .danhmuc__items:hover .danhmuc__items-text {
@@ -87,9 +87,9 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    width: 85%;
+    width: 80%;
     aspect-ratio: 1/1;
-    background-image: url(../assets/abu.webp);
+    background-image: url(../../public/1.webp);
     margin-top: .5rem;
     transition: .3s ease;
 }

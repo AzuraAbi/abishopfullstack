@@ -44,8 +44,8 @@ app.post("/api/register", async (req, res) => {
 
     try {
         const [existingEmail] = await db.promise().query(query_email, [email])
-    
-        if(existingEmail.length > 0) {
+
+        if (existingEmail.length > 0) {
             return res.json({
                 success: false,
                 msg: "Email đã tồn tại"
@@ -54,7 +54,7 @@ app.post("/api/register", async (req, res) => {
 
         const [existingPhone] = await db.promise().query(query_phone, [phone])
 
-        if(existingPhone.length > 0) {
+        if (existingPhone.length > 0) {
             return res.json({
                 success: false,
                 msg: "Số điện thoại đã tồn tại"
@@ -68,7 +68,7 @@ app.post("/api/register", async (req, res) => {
             msg: "Đăng ký thành công"
         })
 
-    } catch(error) {
+    } catch (error) {
         res.status(500).json({ message: "Lỗi server", error });
     }
 })
@@ -89,7 +89,7 @@ app.post("/api/login", (req, res) => {
                 {
                     id: user.userid,
                 },
-                SECRET_KEY, 
+                SECRET_KEY,
                 { expiresIn: "1h" }
             )
 
@@ -106,5 +106,16 @@ app.post("/api/login", (req, res) => {
     })
 })
 
+app.get("/danhmuc", (req, res) => {
+    const query = "SELECT * FROM danhmuc ORDER BY idDanhmuc ASC"
+
+    db.query(query, (err, result) => {
+        if(err) {
+            if (err) return res.status(500).json({ error: err.message });
+        }
+
+        res.json(result)
+    })
+})
 
 app.listen(PORT, () => console.log(`🚀 Server chạy tại http://localhost:${PORT}`))
