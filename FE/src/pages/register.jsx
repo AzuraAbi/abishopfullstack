@@ -86,7 +86,6 @@ function Register() {
                   type="text"
                   className="reg-input"
                   placeholder="Tên người dùng"
-                  maxLength={12}
                   autoComplete="off"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}

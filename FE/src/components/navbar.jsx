@@ -49,7 +49,7 @@ function Navbar() {
   }, []);
 
   const handleInfo = () => {
-    if(localStorage.getItem("userToken")) {
+    if(user) {
       navigate("/accountinfo")
     } else {
       navigate("/login")

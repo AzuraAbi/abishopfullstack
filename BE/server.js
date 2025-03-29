@@ -110,7 +110,7 @@ app.get("/danhmuc", (req, res) => {
     const query = "SELECT * FROM danhmuc ORDER BY idDanhmuc ASC"
 
     db.query(query, (err, result) => {
-        if(err) {
+        if (err) {
             if (err) return res.status(500).json({ error: err.message });
         }
 
@@ -121,18 +121,83 @@ app.get("/danhmuc", (req, res) => {
 
 app.get("/getUsername/:id", (req, res) => {
     const userId = req.params.id;
-    console.log(userId)
     const query = "SELECT * FROM users WHERE userid = ?"
 
     db.query(query, [userId], (err, result) => {
-        if(err) {
+        if (err) {
             return res.status(500).json({ status: false });
         }
         if (result.length === 0) return res.status(404).json({ status: false });
 
         res.json({
             status: true,
-            username: result[0].username
+            value: result[0].username
+        })
+    })
+})
+
+app.get("/getSodu/:id", (req, res) => {
+    const userId = req.params.id;
+    const query = "SELECT sodu.sodu FROM sodu INNER JOIN users ON sodu.userid = users.userid WHERE sodu.userid = ?"
+
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ status: false })
+        }
+
+        if (result.length === 0) {
+            const addSodu = "INSERT INTO sodu (userid, sodu) VALUE (?, ?)"
+
+            db.query(addSodu, [userId, 0], (e, r) => {
+                if (e) {
+                    return res.status(500).json({ status: false })
+                }
+
+                res.json({
+                    status: true,
+                    value: 0
+                })
+            })
+
+        } else {
+            res.json({
+                status: true,
+                value: result[0].sodu
+            })
+        }
+    })
+})
+
+app.get("/getEmail/:id", (req, res) => {
+    const userId = req.params.id;
+    const query = "SELECT * FROM users WHERE userid = ?"
+
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ status: false });
+        }
+        if (result.length === 0) return res.status(404).json({ status: false });
+
+        res.json({
+            status: true,
+            value: result[0].email
+        })
+    })
+})
+
+app.get("/getPhone/:id", (req, res) => {
+    const userId = req.params.id;
+    const query = "SELECT * FROM users WHERE userid = ?"
+
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ status: false });
+        }
+        if (result.length === 0) return res.status(404).json({ status: false });
+
+        res.json({
+            status: true,
+            value: result[0].phone
         })
     })
 })

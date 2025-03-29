@@ -70,9 +70,22 @@ body {
     border: 2px solid gray;
 }
 
-.accountinfo__info .info__username {
-    color: black;
+.accountinfo__info .info__items {
+    color: var(--main-color);
     width: 100%;
     text-indent: .8rem;
     margin: .5rem 0;
+}
+
+.info__items .info__text {
+    color: black;
+}
+
+.info-describe__container .info__content {
+    background: var(--content-color);
+    width: 70%;
+    height: 300px;
+    border: 2px solid gray;
+    margin-left: .8rem;
+    margin-top: .4rem;
 }
