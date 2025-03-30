@@ -202,4 +202,69 @@ app.get("/getPhone/:id", (req, res) => {
     })
 })
 
+app.get("/getMota/:id", (req, res) => {
+    const userId = req.params.id;
+    const query = "SELECT * FROM users WHERE userid = ?"
+
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ status: false });
+        }
+        if (result.length === 0) {
+            db.query("INSERT INTO mota (userid) VALUE (?)", [userId], (e, r) => {
+                if (e) {
+                    return res.status(500).json({ status: false })
+                }
+
+                res.json({
+                    status: true,
+                    value: ""
+                })
+            })
+        } else {   
+            res.json({
+                status: true,
+                value: result[0].mota
+            })
+        }
+    })
+})
+
+app.post("/update-description", (req, res) => {
+    const { userId, description } = req.body
+
+    const queryCheck = "SELECT * FROM mota WHERE userid = ?"
+
+    db.query(queryCheck, [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ status: false });
+        }
+
+        const check = result.length === 0
+
+        if(check) {
+            const query = "INSERT INTO mota (userid, mota) VALUE (?, ?)"
+
+            db.query(query, [userId, description], (e, r) => {
+                if(e) {
+                    return res.status(500).json({ status: false });
+                }
+
+                res.json({status: true, desc: description})
+            })
+        } else {
+            const query = "UPDATE mota SET mota = ? WHERE userid = ?"
+
+            db.query(query, [description, userId], (e, r) => {
+                if(e) {
+                    return res.status(500).json({ status: false });
+                }
+
+                res.json({status: true, desc: description})
+            })
+
+        }
+    })
+})
+
 app.listen(PORT, () => console.log(`🚀 Server chạy tại http://localhost:${PORT}`))

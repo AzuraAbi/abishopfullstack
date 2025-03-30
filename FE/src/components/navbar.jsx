@@ -25,6 +25,7 @@ function Navbar() {
         if(decoded.exp < current_time) {
           localStorage.removeItem("userToken")
           localStorage.removeItem("userData")
+          navigate("/login")
           setUser(null)
         } else {
           if (storedUser) {

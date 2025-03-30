@@ -58,7 +58,7 @@ body {
     font-size: 1.5rem;
     width: 100%;
     text-indent: 1rem;
-    margin-top: 0.7rem;
+    margin-top: 0.9rem;
 }
 
 .accountinfo__content .accountinfo__info {
@@ -86,6 +86,61 @@ body {
     width: 70%;
     height: 300px;
     border: 2px solid gray;
-    margin-left: .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: .6rem;
+    border-radius: 5px;
+}
+
+.info__content .info__content-text {
+    width: 98%;
+    height: 96%;
+    text-indent: 0;
+    text-align: justify;
+    background: transparent;
+    color: var(--main-color);
+}
+
+.info__content-text:focus {
+    outline: none;
+}
+
+.info-describe__container .desc-buttons {
+    width: 70%;
+    height: 40px;
+    background: transparent;
     margin-top: .4rem;
+    margin-left: .6rem;
+    border: 2px solid transparent;
+    display: flex;
+    justify-content: right;
+}
+
+.desc-buttons .desc__buttons {
+    color: white;
+    background: var(--main-color);
+    width: 90px;
+    text-indent: 0;
+    display: flex;
+    font-size: .9rem;
+    justify-content: center;
+    align-items: center;
+    transition: .3s ease;
+    border-radius: 5px;
+    user-select: none;
+}
+
+.desc-buttons .desc__buttons:hover {
+    background: var(--main-hover-color);
+}
+
+.desc-buttons .edit-button {
+    right: 0;
+    opacity: 1;
+}
+
+
+textarea {
+    resize: none;
 }
