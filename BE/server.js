@@ -6,6 +6,10 @@ import "dotenv/config.js"
 import bodyParser from "body-parser";
 import db from "./config/db.js";
 import jwt from "jsonwebtoken"
+import multer from "multer";
+import path from "path";
+import sharp from "sharp";
+import fs from "fs"
 
 const app = express()
 app.use(cors())
@@ -15,6 +19,62 @@ const PORT = process.env.PORT || 5000
 const SECRET_KEY = process.env.SECRET_KEY
 
 createUserTable();
+
+const storage = multer.diskStorage({
+    destination: "./uploads/",
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
+
+const upload = multer({ storage });
+
+app.post("/uploadAvt", upload.single("image"), async (req, res) => {
+    if (!req.file) return res.status(400).json({ message: "Không có file nào được chọn!" });
+
+    const { userId } = req.body
+    
+    const webpFilename = `avatar-${userId}.webp`
+    const webpPath = `./uploads/${webpFilename}`
+    const imageUrl = `/uploads/${webpFilename}`
+
+    console.log(webpFilename)
+
+    try {
+
+        const [oldImage] = await new Promise((resolve, reject) => {
+            db.query("SELECT avturl FROM avatar WHERE userid = ?", [userId], (err, result) => {
+                if (err) reject(err);
+                else resolve(result);
+            });
+        });
+
+        if (oldImage && oldImage.avturl) {
+            const oldImagePath = `.${oldImage.avturl}`;
+            if (fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath);
+            }
+        }
+
+        await sharp(req.file.buffer)
+            .resize(500)
+            .toFormat("webp")
+            .webp({ quality: 80 })
+            .toFile(webpPath);
+
+        const query = `INSERT INTO avatar (userid, avturl) VALUE (?, ?) ON DUPLICATE KEY UPDATE avturl = ?`
+
+        db.query(query, [userId, imageUrl, imageUrl], (e) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: "Avatar updated successfully", imageUrl });
+        })
+
+    } catch(error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.use("/uploads", express.static("uploads"));
 
 app.use("/api/users", userRoutes);
 
@@ -204,14 +264,14 @@ app.get("/getPhone/:id", (req, res) => {
 
 app.get("/getMota/:id", (req, res) => {
     const userId = req.params.id;
-    const query = "SELECT * FROM users WHERE userid = ?"
+    const query = "SELECT * FROM mota WHERE userid = ?"
 
     db.query(query, [userId], (err, result) => {
         if (err) {
             return res.status(500).json({ status: false });
         }
         if (result.length === 0) {
-            db.query("INSERT INTO mota (userid) VALUE (?)", [userId], (e, r) => {
+            db.query("INSERT INTO mota (userid, mota) VALUE (?, ?)", [userId, ""], (e, r) => {
                 if (e) {
                     return res.status(500).json({ status: false })
                 }
@@ -221,7 +281,7 @@ app.get("/getMota/:id", (req, res) => {
                     value: ""
                 })
             })
-        } else {   
+        } else {
             res.json({
                 status: true,
                 value: result[0].mota
@@ -230,8 +290,10 @@ app.get("/getMota/:id", (req, res) => {
     })
 })
 
-app.post("/update-description", (req, res) => {
+app.post("/api/updateDesc", (req, res) => {
     const { userId, description } = req.body
+
+    console.log(userId, description)
 
     const queryCheck = "SELECT * FROM mota WHERE userid = ?"
 
@@ -240,29 +302,57 @@ app.post("/update-description", (req, res) => {
             return res.status(500).json({ status: false });
         }
 
-        const check = result.length === 0
+        const check = (result.length === 0)
 
-        if(check) {
+        if (check) {
             const query = "INSERT INTO mota (userid, mota) VALUE (?, ?)"
 
             db.query(query, [userId, description], (e, r) => {
-                if(e) {
+                if (e) {
                     return res.status(500).json({ status: false });
                 }
 
-                res.json({status: true, desc: description})
+                res.json({ status: true, desc: description })
             })
         } else {
             const query = "UPDATE mota SET mota = ? WHERE userid = ?"
 
             db.query(query, [description, userId], (e, r) => {
-                if(e) {
+                if (e) {
                     return res.status(500).json({ status: false });
                 }
 
-                res.json({status: true, desc: description})
+                res.json({ status: true, desc: description })
             })
 
+        }
+    })
+})
+
+app.get("/getAvt/:id", (req, res) => {
+    const userId = req.params.id;
+    const query = "SELECT * FROM avatar WHERE userid = ?"
+
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ status: false });
+        }
+        if (result.length === 0) {
+            db.query("INSERT INTO avatar (userid, avturl) VALUE (?, ?)", [userId, "url(../../public/abu.png)"], (e, r) => {
+                if (e) {
+                    return res.status(500).json({ status: false })
+                }
+
+                res.json({
+                    status: true,
+                    value: "url(../../public/abu.png)"
+                })
+            })
+        } else {
+            res.json({
+                status: true,
+                value: result[0].avturl
+            })
         }
     })
 })
