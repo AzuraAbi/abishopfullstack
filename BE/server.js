@@ -15,19 +15,15 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 
+app.use("/uploads", express.static("uploads"));
+
 const PORT = process.env.PORT || 5000
 const SECRET_KEY = process.env.SECRET_KEY
 
 createUserTable();
 
-const storage = multer.diskStorage({
-    destination: "./uploads/",
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    },
-});
-
-const upload = multer({ storage });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 app.post("/uploadAvt", upload.single("image"), async (req, res) => {
     if (!req.file) return res.status(400).json({ message: "Không có file nào được chọn!" });
@@ -38,8 +34,6 @@ app.post("/uploadAvt", upload.single("image"), async (req, res) => {
     const webpPath = `./uploads/${webpFilename}`
     const imageUrl = `/uploads/${webpFilename}`
 
-    console.log(webpFilename)
-
     try {
 
         const [oldImage] = await new Promise((resolve, reject) => {
@@ -48,6 +42,7 @@ app.post("/uploadAvt", upload.single("image"), async (req, res) => {
                 else resolve(result);
             });
         });
+        
 
         if (oldImage && oldImage.avturl) {
             const oldImagePath = `.${oldImage.avturl}`;
@@ -62,10 +57,12 @@ app.post("/uploadAvt", upload.single("image"), async (req, res) => {
             .webp({ quality: 80 })
             .toFile(webpPath);
 
+
+
         const query = `INSERT INTO avatar (userid, avturl) VALUE (?, ?) ON DUPLICATE KEY UPDATE avturl = ?`
 
         db.query(query, [userId, imageUrl, imageUrl], (e) => {
-            if (err) return res.status(500).json({ error: err.message });
+            if (e) return res.status(500).json({ error: e.message });
             res.json({ message: "Avatar updated successfully", imageUrl });
         })
 
@@ -74,7 +71,6 @@ app.post("/uploadAvt", upload.single("image"), async (req, res) => {
     }
 });
 
-app.use("/uploads", express.static("uploads"));
 
 app.use("/api/users", userRoutes);
 
