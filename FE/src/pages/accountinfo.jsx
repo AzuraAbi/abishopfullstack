@@ -1,5 +1,5 @@
 import Navbar from "../components/navbar";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios"
 import "../styles/accountinfo.css"
 import AccountTemplate from "../components/account";
