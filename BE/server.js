@@ -398,14 +398,26 @@ app.post("/api/changePhone", (req, res) => {
 app.post("/api/changeEmail", (req, res) => {
     const { userId, email } = req.body
 
-    const query = "UPDATE users SET email = ? WHERE userid = ?"
+    const queryCheck = "SELECT * FROM users WHERE email = ?"
 
-    db.query(query, [email, userId], (e, r) => {
-        if(e) {
-            return res.status(500).json({ status: false });
+    db.query(queryCheck, [email], (err, result) => {
+        if(err) {
+            return res.status(500).json({ status: false, msg: "" });
         }
 
-        res.json({ status: true })
+        if(result.length === 0) {
+            const query = "UPDATE users SET email = ? WHERE userid = ?"
+
+            db.query(query, [email, userId], (e, r) => {
+                if(e) {
+                    return res.status(500).json({ status: false, msg: "" });
+                }
+        
+                res.json({ status: true })
+            })
+        } else {
+            res.json({ status: false, msg: "error"})
+        }
     })
 })
 

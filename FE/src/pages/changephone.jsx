@@ -21,8 +21,9 @@ function ChangePhone () {
         if (!phone) {
             setError(true)
         } else {
-            if(!isNumeric(phone)) {
+            if(!isNumeric(phone) || phone.length != 10) {
                 setErr("Vui lòng nhập đúng định dạng số điện thoại")
+                setError(true)
                 return
             }
             setError(false)
@@ -45,6 +46,7 @@ function ChangePhone () {
                     } else {
                         if(response.data.msg == "error") {
                             setErr("Số điện thoại đã tồn tại")
+                            setError(true)
                         } else {
                             alert("Đã xảy ra lỗi, vui lòng thử lại")
                             navigate("/security-settings")

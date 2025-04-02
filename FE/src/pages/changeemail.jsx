@@ -18,6 +18,7 @@ function ChangeEmail () {
             setError(true)
         } else {
             if(!email.endsWith("@gmail.com")) {
+                setError(true)
                 setErr("Vui lòng nhập đúng định dạng email")
                 return
             }
@@ -39,8 +40,13 @@ function ChangeEmail () {
                         alert("Thay đổi thành công")
                         navigate("/security-settings")
                     } else {
-                        alert("Đã xảy ra lỗi, vui lòng thử lại")
-                        navigate("/security-settings")
+                        if(response.data.msg == "error") {
+                            setErr("Địa chỉ email đã tồn tại")
+                            setError(true)
+                        } else {
+                            alert("Đã xảy ra lỗi, vui lòng thử lại")
+                            navigate("/security-settings")
+                        }
                     }
 
 
