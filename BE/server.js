@@ -353,4 +353,60 @@ app.get("/getAvt/:id", (req, res) => {
     })
 })
 
+app.post("/api/changeUsername", (req, res) => {
+    const { userId, username } = req.body
+
+    const query = "UPDATE users SET username = ? WHERE userid = ?"
+
+    db.query(query, [username, userId], (e, r) => {
+        if(e) {
+            return res.status(500).json({ status: false });
+        }
+
+        res.json({ status: true })
+    })
+})
+
+app.post("/api/changePhone", (req, res) => {
+    const { userId, phone } = req.body
+
+    const queryCheck = "SELECT * FROM users WHERE phone = ?"
+
+    db.query(queryCheck, [phone], (err, result) => {
+        if(err) {
+            return res.status(500).json({ status: false, msg: "" });
+        }
+
+        if(result.length === 0) {
+            const query = "UPDATE users SET phone = ? WHERE userid = ?"
+
+            db.query(query, [phone, userId], (e, r) => {
+                if(e) {
+                    return res.status(500).json({ status: false, msg: "" });
+                }
+        
+                res.json({ status: true })
+            })
+        } else {
+            res.json({ status: false, msg: "error"})
+        }
+    })
+
+
+})
+
+app.post("/api/changeEmail", (req, res) => {
+    const { userId, email } = req.body
+
+    const query = "UPDATE users SET email = ? WHERE userid = ?"
+
+    db.query(query, [email, userId], (e, r) => {
+        if(e) {
+            return res.status(500).json({ status: false });
+        }
+
+        res.json({ status: true })
+    })
+})
+
 app.listen(PORT, () => console.log(`🚀 Server chạy tại http://localhost:${PORT}`))

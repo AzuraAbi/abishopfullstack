@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: "Varela Round", sans-serif;
+    text-decoration: none;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --main-color: rgb(255, 103, 42);
+    --main-hover-color: rgb(255, 131, 82);
+    --body-color: rgb(231, 231, 231);
+    --content-color: rgb(255, 255, 255);
+    --shadow: 0 0 5px 1px black;
+    --category-main-color: gray;
+    --category-focus-color: rgb(76, 76, 76);
+    --category-hover-color: rgb(224, 224, 224);
+    --error-color: rgb(255 , 85, 85);
+}
+
+input:focus {
+    outline: none;
+}
+
+body {
+    background: var(--body-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.change-phone {
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.change-phone .change-phone__container {
+    background: var(--content-color);
+    width: 70%;
+    box-shadow: var(--shadow);
+    display: flex;
+}
+
+.change-phone__container .change-phone__content {
+    width: 75%;
+    background: var(--content-color);
+    border-left: 2px solid gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.change-phone__content .change-phone__title {
+    color: gray;
+    font-size: 1.5rem;
+    width: 100%;
+    text-indent: 1rem;
+    margin-top: 0.9rem;
+    user-select: none;
+}
+
+.change-phone__main {
+    width: 94%;
+    display: flex;
+    align-items: center;
+    margin-top: .5rem;
+}
+
+.change-phone__main .change-phone__text {
+    color: black;
+    margin-right: .5rem;
+    font-size: 1.3rem;
+    user-select: none;
+}
+
+.change-phone__main .change-phone__input {
+    background: var(--content-color);
+    border-radius: 5px;
+    border: 2px solid gray;
+    height: 40px;
+    width: 200px;
+    text-indent: 5px;
+    color: black;
+    font-size: 1.2rem;
+}
+
+.change-phone__content .change-phone__submit-container {
+    display: flex;
+    width: 94%;
+    margin-top: 1rem;
+}
+
+.change-phone__submit-container .change-phone__submit {
+    background: var(--main-color);
+    border-radius: 5px;
+    font-size: 1.1rem;
+    height: 50px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .3s ease;
+    user-select: none;
+}
+
+.change-phone__submit:hover {
+    background: var(--main-hover-color);
+}
+
+.change-error {
+    color: var(--error-color);
+    margin-top: .8rem;
+    width: 94%;
+    text-align: left;
+    font-size: 1rem;
+    user-select: none;
+}
