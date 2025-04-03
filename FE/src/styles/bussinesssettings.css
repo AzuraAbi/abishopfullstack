@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: "Varela Round", sans-serif;
+    text-decoration: none;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --main-color: rgb(255, 103, 42);
+    --main-hover-color: rgb(255, 131, 82);
+    --body-color: rgb(231, 231, 231);
+    --content-color: rgb(255, 255, 255);
+    --shadow: 0 0 5px 1px black;
+    --category-main-color: gray;
+    --category-focus-color: rgb(76, 76, 76);
+    --category-hover-color: rgb(224, 224, 224);
+    --error-color: rgb(255 , 85, 85);
+    --new-color: rgb(64, 226, 94);
+}
+
+input:focus {
+    outline: none;
+}
+
+body {
+    background: var(--body-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.business-page {
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.business-page .business-page__container {
+    background: var(--content-color);
+    width: 70%;
+    box-shadow: var(--shadow);
+    display: flex;
+}
+
+.business-page__container .business-page__content {
+    width: 75%;
+    background: var(--content-color);
+    border-left: 2px solid gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.business-page__content .business-page__title {
+    color: gray;
+    font-size: 1.5rem;
+    width: 100%;
+    text-indent: 1rem;
+    margin-top: 0.9rem;
+    user-select: none;
+}
+
+.business-page__main {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.business-page__main .business__header {
+    display: flex;
+}
+
+.business__header .business__create-new {
+    background: var(--new-color);
+    color: var(--content-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    height: 2.5rem;
+    padding: 0 1rem;
+}
