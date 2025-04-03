@@ -391,8 +391,32 @@ app.post("/api/changePhone", (req, res) => {
             res.json({ status: false, msg: "error"})
         }
     })
+})
 
+app.post("/api/changePassword", (req, res) => {
+    const { userId, curPass, pass } = req.body
 
+    const queryCheckCur = "SELECT * FROM users WHERE userid = ? AND password = ?"
+
+    db.query(queryCheckCur, [userId, curPass], (err, result) => {
+        if(err) {
+            return res.status(500).json({ status: false, msg: "" });
+        }
+
+        if(result.length === 0) {
+            res.json({ status: false, msg: "Mật khẩu không chính xác"})
+        } else {
+            const queryChange = "UPDATE users SET password = ? WHERE userid = ?"
+
+            db.query(queryChange, [pass, userId], (e, r) => {
+                if(e) {
+                    return res.status(500).json({ status: false, msg: "" });
+                }
+
+                res.json({ status: true })
+            })
+        }
+    })
 })
 
 app.post("/api/changeEmail", (req, res) => {
