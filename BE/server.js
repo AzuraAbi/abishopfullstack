@@ -29,7 +29,7 @@ app.post("/uploadAvt", upload.single("image"), async (req, res) => {
     if (!req.file) return res.status(400).json({ message: "Không có file nào được chọn!" });
 
     const { userId } = req.body
-    
+
     const webpFilename = `avatar-${userId}.webp`
     const webpPath = `./uploads/${webpFilename}`
     const imageUrl = `/uploads/${webpFilename}`
@@ -42,7 +42,7 @@ app.post("/uploadAvt", upload.single("image"), async (req, res) => {
                 else resolve(result);
             });
         });
-        
+
 
         if (oldImage && oldImage.avturl) {
             const oldImagePath = `.${oldImage.avturl}`;
@@ -57,8 +57,6 @@ app.post("/uploadAvt", upload.single("image"), async (req, res) => {
             .webp({ quality: 80 })
             .toFile(webpPath);
 
-
-
         const query = `INSERT INTO avatar (userid, avturl) VALUE (?, ?) ON DUPLICATE KEY UPDATE avturl = ?`
 
         db.query(query, [userId, imageUrl, imageUrl], (e) => {
@@ -66,7 +64,7 @@ app.post("/uploadAvt", upload.single("image"), async (req, res) => {
             res.json({ message: "Avatar updated successfully", imageUrl });
         })
 
-    } catch(error) {
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
@@ -359,7 +357,7 @@ app.post("/api/changeUsername", (req, res) => {
     const query = "UPDATE users SET username = ? WHERE userid = ?"
 
     db.query(query, [username, userId], (e, r) => {
-        if(e) {
+        if (e) {
             return res.status(500).json({ status: false });
         }
 
@@ -373,22 +371,22 @@ app.post("/api/changePhone", (req, res) => {
     const queryCheck = "SELECT * FROM users WHERE phone = ?"
 
     db.query(queryCheck, [phone], (err, result) => {
-        if(err) {
+        if (err) {
             return res.status(500).json({ status: false, msg: "" });
         }
 
-        if(result.length === 0) {
+        if (result.length === 0) {
             const query = "UPDATE users SET phone = ? WHERE userid = ?"
 
             db.query(query, [phone, userId], (e, r) => {
-                if(e) {
+                if (e) {
                     return res.status(500).json({ status: false, msg: "" });
                 }
-        
+
                 res.json({ status: true })
             })
         } else {
-            res.json({ status: false, msg: "error"})
+            res.json({ status: false, msg: "error" })
         }
     })
 })
@@ -399,17 +397,17 @@ app.post("/api/changePassword", (req, res) => {
     const queryCheckCur = "SELECT * FROM users WHERE userid = ? AND password = ?"
 
     db.query(queryCheckCur, [userId, curPass], (err, result) => {
-        if(err) {
+        if (err) {
             return res.status(500).json({ status: false, msg: "" });
         }
 
-        if(result.length === 0) {
-            res.json({ status: false, msg: "Mật khẩu không chính xác"})
+        if (result.length === 0) {
+            res.json({ status: false, msg: "Mật khẩu không chính xác" })
         } else {
             const queryChange = "UPDATE users SET password = ? WHERE userid = ?"
 
             db.query(queryChange, [pass, userId], (e, r) => {
-                if(e) {
+                if (e) {
                     return res.status(500).json({ status: false, msg: "" });
                 }
 
@@ -425,22 +423,60 @@ app.post("/api/changeEmail", (req, res) => {
     const queryCheck = "SELECT * FROM users WHERE email = ?"
 
     db.query(queryCheck, [email], (err, result) => {
-        if(err) {
+        if (err) {
             return res.status(500).json({ status: false, msg: "" });
         }
 
-        if(result.length === 0) {
+        if (result.length === 0) {
             const query = "UPDATE users SET email = ? WHERE userid = ?"
 
             db.query(query, [email, userId], (e, r) => {
-                if(e) {
+                if (e) {
                     return res.status(500).json({ status: false, msg: "" });
                 }
-        
+
                 res.json({ status: true })
             })
         } else {
-            res.json({ status: false, msg: "error"})
+            res.json({ status: false, msg: "error" })
+        }
+    })
+})
+
+app.post("api/themsanpham", upload.single('hinhanh'), async (req, res) => {
+
+    const { userid, ten, gia, mota } = req.body
+    const anh = req.file
+
+    const countQuery = "SELECT COUNT(*) AS total FROM mathang WHERE userid = ?"
+
+    db.query(countQuery, [userid], async (err, result) => {
+        if (err) return res.status(500).json({ status: false, error: err.message });
+
+        const sothutu = result[0].total + 1
+        const webpFilename = `mathang-${userid}-${sothutu}.webp`
+        const webpPath = `./uploads/${webpFilename}`
+        const imageUrl = `/uploads/${webpFilename}`
+
+        try {
+
+            await sharp(anh.buffer)
+                .resize(500)
+                .toFormat("webp")
+                .webp({ quality: 80 })
+                .toFile(webpPath)
+
+            const insertQuery = "INSERT INTO mathang (tenmathang, giaban, mota, anhsanpham, userid) VALUE (?, ?, ?, ?, ?)"
+
+            db.query(insertQuery, [ten, gia, mota, filename, userid], (e) => {
+                if (e) return res.status(500).json({ status: false, error: e.message });
+
+                res.json({ status: true })
+            })
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ error: 'Lỗi xử lý ảnh hoặc lưu sản phẩm' });
         }
     })
 })

@@ -4,8 +4,13 @@ import "../styles/bussinesssettings.css"
 import { IonIcon } from "@ionic/react"
 import { create, search } from "ionicons/icons"
 import { useState } from "react"
+import { jwtDecode } from "jwt-decode"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 function BusinessSettings() {
+    const navigate = useNavigate()
+
     const [sx, setSx] = useState(false)
     const [oc, setOc] = useState(false)
     const [blackscreen, setBlack] = useState(false)
@@ -28,7 +33,7 @@ function BusinessSettings() {
 
     function isNumeric(str) {
         return /^\d+$/.test(str);
-      }
+    }
 
     const sort = (sortType) => {
         setSx(false)
@@ -37,14 +42,14 @@ function BusinessSettings() {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
 
-        if(file) {
+        if (file) {
             const imageUrl = URL.createObjectURL(file);
             setImagePreview(imageUrl);
             setAsp(file)
         }
     }
 
-    const createNew = () => {
+    const createNew = async () => {
         if (!tsp) {
             setE1(true)
             setErr1("Vui lòng nhập tên sản phẩm")
@@ -56,7 +61,7 @@ function BusinessSettings() {
             setE2(true)
             setErr2("Vui lòng nhập giá bán sản phẩm")
         } else {
-            if(isNumeric(gb)) {
+            if (isNumeric(gb)) {
                 setE2(false)
             } else {
                 setE2(true)
@@ -80,6 +85,34 @@ function BusinessSettings() {
 
         if (tsp && gb && mt && asp) {
 
+            const storedToken = localStorage.getItem("userToken")
+
+            if (storedToken) {
+                try {
+                    const decoded = jwtDecode(storedToken)
+                    const userId = decoded.id
+
+                    const formData = new FormData()
+
+                    formData.append("userid", userId)
+                    formData.append("ten", tsp)
+                    formData.append("gia", gb)
+                    formData.append("mota", mt)
+                    formData.append("anh", asp)
+
+                    const res = await axios.post('https://localhost:5000/api/themsanpham', formData)
+
+                    if(res.data.status) {
+                        window.location.reload()
+                    } else {
+                        alert("Đã xảy ra lỗi")
+                        navigate("/")
+                    }
+
+                } catch (error) {
+                    console.error("Lỗi khi gửi yêu cầu:", error);
+                }
+            }
         }
     }
 
@@ -122,7 +155,7 @@ function BusinessSettings() {
                                 type="text"
                                 placeholder="Giá bán"
                                 className="add-gia-ban"
-                                maxlength={10}
+                                maxLength={10}
                                 onChange={(e) => setGb(e.target.value)}
                             />
 
@@ -140,7 +173,7 @@ function BusinessSettings() {
                         </div>
 
                         <div className="add-anhbia">
-                            <div className="add-preview" style={{backgroundImage: imagePreview ? `url(${imagePreview})` : "none"}}>
+                            <div className="add-preview" style={{ backgroundImage: imagePreview ? `url(${imagePreview})` : "none" }}>
 
                             </div>
 
