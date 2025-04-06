@@ -215,7 +215,6 @@ function AccountInfo() {
                         .then(data => {
                             if (data.status) {
                                 setAvt(data.value);
-                                console.log(data.value)
                             }
                         })
                         .catch(err => console.error("Lỗi lấy user:", err));

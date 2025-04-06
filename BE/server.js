@@ -8,8 +8,12 @@ import db from "./config/db.js";
 import jwt from "jsonwebtoken"
 import multer from "multer";
 import path from "path";
+import { fileURLToPath } from 'url';
 import sharp from "sharp";
 import fs from "fs"
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express()
 app.use(cors())
@@ -351,6 +355,7 @@ app.get("/getAvt/:id", (req, res) => {
     })
 })
 
+
 app.post("/api/changeUsername", (req, res) => {
     const { userId, username } = req.body
 
@@ -443,22 +448,23 @@ app.post("/api/changeEmail", (req, res) => {
     })
 })
 
-app.post("api/themsanpham", upload.single('hinhanh'), async (req, res) => {
+app.post("/api/themsanpham", upload.single('anh'), async (req, res) => {
 
     const { userid, ten, gia, mota } = req.body
     const anh = req.file
 
+    console.log(req.body)
+
     const countQuery = "SELECT COUNT(*) AS total FROM mathang WHERE userid = ?"
 
-    db.query(countQuery, [userid], async (err, result) => {
-        if (err) return res.status(500).json({ status: false, error: err.message });
+    try {
+        db.query(countQuery, [userid], async (err, result) => {
+            if (err) return res.status(500).json({ status: false, error: err.message });
 
-        const sothutu = result[0].total + 1
-        const webpFilename = `mathang-${userid}-${sothutu}.webp`
-        const webpPath = `./uploads/${webpFilename}`
-        const imageUrl = `/uploads/${webpFilename}`
+            const sothutu = result[0].total + 1
+            const webpFilename = `mathang-${userid}-${sothutu}.webp`
+            const webpPath = path.join(__dirname, 'uploads', webpFilename);
 
-        try {
 
             await sharp(anh.buffer)
                 .resize(500)
@@ -468,16 +474,34 @@ app.post("api/themsanpham", upload.single('hinhanh'), async (req, res) => {
 
             const insertQuery = "INSERT INTO mathang (tenmathang, giaban, mota, anhsanpham, userid) VALUE (?, ?, ?, ?, ?)"
 
-            db.query(insertQuery, [ten, gia, mota, filename, userid], (e) => {
+            db.query(insertQuery, [ten, gia, mota, webpPath, userid], (e) => {
                 if (e) return res.status(500).json({ status: false, error: e.message });
 
                 res.json({ status: true })
             })
 
-        } catch (error) {
-            console.log(error)
-            res.status(500).json({ error: 'Lỗi xử lý ảnh hoặc lưu sản phẩm' });
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Lỗi xử lý ảnh hoặc lưu sản phẩm' });
+    }
+})
+
+app.get("/getsanpham/:id", (req, res) => {
+    const userId = req.params.id;
+    const query = "SELECT * FROM mathang WHERE userid = ?"
+
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ status: false });
         }
+
+        res.json({
+            status: true,
+            value: result
+        })
+
     })
 })
 

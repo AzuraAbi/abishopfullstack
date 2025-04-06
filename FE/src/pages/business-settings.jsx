@@ -3,10 +3,11 @@ import AccountTemplate from "../components/account"
 import "../styles/bussinesssettings.css"
 import { IonIcon } from "@ionic/react"
 import { create, search } from "ionicons/icons"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import { decode } from "punycode"
 
 function BusinessSettings() {
     const navigate = useNavigate()
@@ -30,6 +31,8 @@ function BusinessSettings() {
     const [err4, setErr4] = useState("")
 
     const [imagePreview, setImagePreview] = useState(null)
+
+    const [dssp, setDssp] = useState([])
 
     function isNumeric(str) {
         return /^\d+$/.test(str);
@@ -100,7 +103,7 @@ function BusinessSettings() {
                     formData.append("mota", mt)
                     formData.append("anh", asp)
 
-                    const res = await axios.post('https://localhost:5000/api/themsanpham', formData)
+                    const res = await axios.post('http://localhost:5000/api/themsanpham', formData)
 
                     if(res.data.status) {
                         window.location.reload()
@@ -115,6 +118,32 @@ function BusinessSettings() {
             }
         }
     }
+
+    useEffect(() => {
+        async function getDanhsach() {
+            const storedToken = localStorage.getItem("userToken")
+
+            if(storedToken) {
+                try {
+                    const decoded = jwtDecode(storedToken)
+                    const userId = decoded.id
+
+                    fetch(`http://localhost:5000/getdanhsach/${userId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.status) {
+                            setDssp(data.value)
+                        }
+                    })
+                    .catch(err => console.log(error("Lỗi lấy user: ", err)));
+                } catch (error) {
+                    console.error("Lỗi giải mã token: ", error)
+                }
+            }
+        }
+
+        getDanhsach()
+    }, [])
 
     return (
         <>
