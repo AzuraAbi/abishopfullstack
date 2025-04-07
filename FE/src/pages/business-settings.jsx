@@ -2,12 +2,11 @@ import Navbar from "../components/navbar"
 import AccountTemplate from "../components/account"
 import "../styles/bussinesssettings.css"
 import { IonIcon } from "@ionic/react"
-import { create, search } from "ionicons/icons"
+import { create, search, trash } from "ionicons/icons"
 import { useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
-import { decode } from "punycode"
 
 function BusinessSettings() {
     const navigate = useNavigate()
@@ -34,12 +33,66 @@ function BusinessSettings() {
 
     const [dssp, setDssp] = useState([])
 
+    const [cursp, setCursp] = useState(null)
+
+    const [danhMucList, setDanhMucList] = useState([]);
+    const [choosedDanhmuc, setChoosedDanhmuc] = useState([])
+    const [oTl, setOtl] = useState(false)
+
     function isNumeric(str) {
         return /^\d+$/.test(str);
     }
 
     const sort = (sortType) => {
         setSx(false)
+    }
+
+    const [eName, set_eName] = useState("")
+    const [ePrice, set_ePrice] = useState("")
+    const [eDesc, set_eDesc] = useState("")
+    const [eCate, set_eCate] = useState([])
+    const [ePics, set_ePics] = useState("")
+    const [ePre, set_ePre] = useState("")
+    const [eFile, set_eFile] = useState(null)
+
+    const openEditSanpham = (idmathang) => {
+        setCursp(idmathang)
+        set_eName("")
+        set_ePrice("")
+        set_eDesc("")
+        set_eCate([])
+        set_ePics("")
+        set_ePre("")
+        set_eFile(null)
+        const storedToken = localStorage.getItem("userToken")
+
+        if (storedToken) {
+            try {
+
+                fetch(`http://localhost:5000/lay-thong-tin-san-pham/${idmathang}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        set_eName(data.tensp)
+                        set_ePrice(data.gia)
+                        set_eDesc(data.mota)
+                        set_eCate(data.danhmuc)
+                        set_ePics(data.anh)
+                    })
+            } catch (error) {
+                console.error("Lỗi khi gửi yêu cầu:", error);
+            }
+        }
+    }
+
+
+    const handleEditSanphamPics = (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            set_ePre(imageUrl)
+            set_eFile(file)
+        }
     }
 
     const handleFileChange = (e) => {
@@ -86,6 +139,7 @@ function BusinessSettings() {
             setE4(false)
         }
 
+
         if (tsp && gb && mt && asp) {
 
             const storedToken = localStorage.getItem("userToken")
@@ -102,10 +156,11 @@ function BusinessSettings() {
                     formData.append("gia", gb)
                     formData.append("mota", mt)
                     formData.append("anh", asp)
+                    formData.append("danhmuc", choosedDanhmuc)
 
                     const res = await axios.post('http://localhost:5000/api/themsanpham', formData)
 
-                    if(res.data.status) {
+                    if (res.data.status) {
                         window.location.reload()
                     } else {
                         alert("Đã xảy ra lỗi")
@@ -119,28 +174,43 @@ function BusinessSettings() {
         }
     }
 
+    const handleCheck = (id) => {
+        if (choosedDanhmuc.includes(id)) {
+            setChoosedDanhmuc(prev => prev.filter(item => item !== id))
+        } else {
+            setChoosedDanhmuc(prev => [...prev, id])
+        }
+    }
+
     useEffect(() => {
         async function getDanhsach() {
             const storedToken = localStorage.getItem("userToken")
 
-            if(storedToken) {
+            if (storedToken) {
                 try {
                     const decoded = jwtDecode(storedToken)
                     const userId = decoded.id
 
-                    fetch(`http://localhost:5000/getdanhsach/${userId}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        if(data.status) {
-                            setDssp(data.value)
-                        }
-                    })
-                    .catch(err => console.log(error("Lỗi lấy user: ", err)));
+                    fetch(`http://localhost:5000/getsanpham/${userId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status) {
+                                console.log(data.value)
+                                setDssp(data.value)
+                            }
+                        })
+                        .catch(err => console.log(err("Lỗi lấy user: ", err)));
                 } catch (error) {
                     console.error("Lỗi giải mã token: ", error)
                 }
             }
         }
+
+        axios.get("http://localhost:5000/danhmuc")
+            .then((response) => {
+                setDanhMucList(response.data);
+            })
+            .catch((error) => console.error("Lỗi khi lấy danh mục:", error));
 
         getDanhsach()
     }, [])
@@ -188,6 +258,28 @@ function BusinessSettings() {
                                 onChange={(e) => setGb(e.target.value)}
                             />
 
+                            <div className="add-the-loai" onMouseLeave={() => setOtl(false)}>
+                                <div className="the-loai-button" onMouseEnter={() => setOtl(true)}>Thể loại</div>
+                                <div className="add-the-loai__dropbox" style={{ opacity: oTl ? 1 : 0 }}>
+                                    {
+                                        danhMucList.map(cate => (
+                                            <div key={cate.idDanhmuc} className="add-cate-items" onClick={() => handleCheck(cate.idDanhmuc)}>
+                                                <div className="add-cate__text">
+                                                    {cate.tenDanhmuc}
+                                                </div>
+
+                                                <div
+                                                    className="add-cate__check"
+                                                    style={{ opacity: choosedDanhmuc.includes(cate.idDanhmuc) ? 1 : 0 }}
+                                                >
+                                                    ✓
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
                             <div
                                 className="add-error"
                                 style={{ opacity: e3 ? 1 : 0 }}
@@ -222,6 +314,89 @@ function BusinessSettings() {
 
                             <div className="add-done-button" onClick={() => createNew()}>
                                 Thêm sản phẩm
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="edit-sanpham" style={{ display: cursp ? "flex" : "none" }}>
+                <div className="edit-sanpham__container">
+
+                    <div className="edit-sanpham__header">
+                        <div className="edit-sanpham__title">Chỉnh sửa sản phẩm</div>
+                        <div className="edit-sanpham__close" onClick={() => {
+                            setCursp(null)
+                            setBlack(false)
+                        }}>X</div>
+                    </div>
+
+                    <div className="edit-sanpham__body">
+                        <div className="edit-sanpham-thongtin">
+                            <div
+                                className="edit-sanpham-error"
+                                style={{ opacity: e1 ? 1 : 0 }}
+                            >
+                                {err1 ? err1 : "Vui lòng nhập đầy đủ thông tin"}
+                            </div>
+                            <input
+                                type="text"
+                                className="edit-sanpham-ten-san-pham"
+                                placeholder="Tên sản phẩm"
+                                value={eName}
+                                onChange={(e) => set_eName(e.target.value)}
+                            />
+
+                            <div
+                                className="edit-sanpham-error"
+                                style={{ opacity: e2 ? 1 : 0 }}
+                            >
+                                {err2 ? err2 : "Vui lòng nhập đầy đủ thông tin"}
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Giá bán"
+                                className="edit-sanpham-gia-ban"
+                                maxLength={10}
+                                value={ePrice}
+                                onChange={(e) => set_ePrice(e.target.value)}
+                            />
+
+                            <div
+                                className="edit-sanpham-error"
+                                style={{ opacity: e3 ? 1 : 0 }}
+                            >
+                                {err3 ? err3 : "Vui lòng nhập đầy đủ thông tin"}
+                            </div>
+                            <textarea
+                                className="edit-sanpham-mo-ta"
+                                placeholder="Mô tả sản phẩm.."
+                                value={eDesc}
+                                onChange={(e) => eDesc(e.target.value)}
+                            ></textarea>
+                        </div>
+
+                        <div className="edit-sanpham-anhbia">
+                            <div className="edit-sanpham-preview" style={{ backgroundImage: ePre ? `url(${ePre})` :`url(http://localhost:5000${ePics})` }}>
+
+                            </div>
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                className="edit-sanpham-anhbia__input"
+                                onChange={(e) => { handleEditSanphamPics(e) }}
+                            />
+
+                            <div
+                                className="edit-sanpham-error"
+                                style={{ opacity: e4 ? 1 : 0 }}
+                            >
+                                {err4 ? err4 : "Vui lòng nhập đầy đủ thông tin"}
+                            </div>
+
+                            <div className="edit-sanpham-done-button" onClick={() => createNew()}>
+                                Hoàn tất chỉnh sửa
                             </div>
                         </div>
                     </div>
@@ -311,6 +486,49 @@ function BusinessSettings() {
                             <div className="business__body">
                                 <div className="business-items">
 
+                                    {dssp.map((sp) => (
+                                        <div className="sanpham" key={sp.idmathang}>
+                                            <div className="sp__container">
+                                                <div className="sp__anh">
+                                                    <div
+                                                        className="sp__anh-display"
+                                                        style={{ backgroundImage: `url(http://localhost:5000${sp.anhsanpham})` }}
+                                                    >
+
+                                                    </div>
+                                                </div>
+
+                                                <div className="sp__info">
+                                                    <div className="sp__info-name">
+                                                        {sp.tenmathang}
+                                                    </div>
+                                                    <div className="sp__info-gia">
+                                                        {sp.giaban.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                                    </div>
+                                                    <div className="sp__info-mota">
+                                                        <span style={{ color: "gray" }}>Mô tả sản phẩm: </span>{sp.mota}
+                                                    </div>
+                                                </div>
+
+                                                <div className="sp__buttons">
+                                                    <div className="sp__buttons-edit" onClick={() => {
+
+                                                        openEditSanpham(sp.idmathang)
+                                                        setBlack(true)
+                                                    }}>
+                                                        <IonIcon icon={create}></IonIcon>
+                                                    </div>
+
+                                                    <div className="sp__buttons-delete">
+                                                        <IonIcon icon={trash}></IonIcon>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+
+
                                 </div>
 
                                 <div className="business-pages-number">
@@ -321,7 +539,7 @@ function BusinessSettings() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }

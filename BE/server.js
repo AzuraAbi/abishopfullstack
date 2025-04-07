@@ -450,7 +450,7 @@ app.post("/api/changeEmail", (req, res) => {
 
 app.post("/api/themsanpham", upload.single('anh'), async (req, res) => {
 
-    const { userid, ten, gia, mota } = req.body
+    const { userid, ten, gia, mota, danhmuc } = req.body
     const anh = req.file
 
     console.log(req.body)
@@ -463,7 +463,8 @@ app.post("/api/themsanpham", upload.single('anh'), async (req, res) => {
 
             const sothutu = result[0].total + 1
             const webpFilename = `mathang-${userid}-${sothutu}.webp`
-            const webpPath = path.join(__dirname, 'uploads', webpFilename);
+            const webpPath = `./uploads/${webpFilename}`
+            const imageUrl = `/uploads/${webpFilename}`
 
 
             await sharp(anh.buffer)
@@ -474,8 +475,16 @@ app.post("/api/themsanpham", upload.single('anh'), async (req, res) => {
 
             const insertQuery = "INSERT INTO mathang (tenmathang, giaban, mota, anhsanpham, userid) VALUE (?, ?, ?, ?, ?)"
 
-            db.query(insertQuery, [ten, gia, mota, webpPath, userid], (e) => {
+            db.query(insertQuery, [ten, gia, mota, imageUrl, userid], (e, r) => {
                 if (e) return res.status(500).json({ status: false, error: e.message });
+
+                const idmathang = r.insertId
+
+                for (let i = 0; i < danhmuc.length; i += 2) {
+                    const dmQuery = "INSERT INTO loaisanpham (idmathang, iddanhmuc) VALUE (?, ?)"
+
+                    db.query(dmQuery, [idmathang, danhmuc[i]])
+                }
 
                 res.json({ status: true })
             })
@@ -502,6 +511,51 @@ app.get("/getsanpham/:id", (req, res) => {
             value: result
         })
 
+    })
+})
+
+app.get("/lay-thong-tin-san-pham/:id", (req, res) => {
+    const idsp = req.params.id
+
+    const query1 = "SELECT * FROM mathang WHERE idmathang = ?"
+    console.log(idsp)
+
+    db.query(query1, [idsp], (err, result) => {
+        if (err) {
+            return res.status(500).json({ status: false })
+        }
+
+
+        const tensp = result[0].tenmathang
+        const giaban = result[0].giaban
+        const mota = result[0].mota
+        const anh = result[0].anhsanpham
+
+        const query2 = "SELECT * FROM loaisanpham WHERE idmathang = ?"
+
+        db.query(query2, [idsp], (e, r) => {
+            if (e) {
+                return res.status(500).json({ status: false })
+            }
+
+            const danhmuc = []
+
+            for (let i = 0; i < r.length; i++) {
+                danhmuc.push(r[i].iddanhmuc)
+            }
+
+            const toReturn = {
+                tensp: tensp,
+                gia: giaban,
+                mota: mota,
+                anh: anh,
+                danhmuc: danhmuc
+            }
+
+            console.log(toReturn)
+            
+            res.json(toReturn)
+        })
     })
 })
 

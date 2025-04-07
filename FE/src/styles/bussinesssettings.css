@@ -77,6 +77,7 @@ body {
     align-items: center;
     margin-top: 1rem;
     border: 2px solid gray;
+    margin-bottom: 1rem;
 }
 
 .business-page__main .business__header {
@@ -207,13 +208,13 @@ body {
 .add-new-items .add-new__container {
     background: var(--content-color);
     width: 50rem;
-    height: 30rem;
+    padding-bottom: 1rem;
 }
 
 .add-new__header {
     width: 100%;
     padding: .5rem 0;
-    color: gray;
+    color: var(--main-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -262,7 +263,7 @@ body {
 .add-preview {
     width: 80%;
     aspect-ratio: 1/1;
-    border: 2px solid gray;
+    border: 2px solid var(--main-color);
 }
 
 .add-anhbia__input {
@@ -273,7 +274,7 @@ body {
 
 .add-ten-san-pham {
     background: var(--content-color);
-    border-bottom: 2px solid gray;
+    border-bottom: 2px solid var(--main-color);
     height: 40px;
     font-size: 1.1rem;
     color: black;
@@ -287,7 +288,7 @@ body {
 
 .add-gia-ban {
     background: var(--content-color);
-    border-bottom: 2px solid gray;
+    border-bottom: 2px solid var(--main-color);
     height: 40px;
     font-size: 1.1rem;
     color: black;
@@ -300,7 +301,7 @@ body {
 
 .add-mo-ta {
     background: var(--content-color);
-    border: 2px solid gray;
+    border: 2px solid var(--main-color);
     padding: .5rem;
     resize: none;
     width: 25rem;
@@ -345,4 +346,339 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+.business__body {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.business__body .business-items {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.sanpham {
+    width: 100%;
+    height: 125px;
+    border-bottom: 2px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sp__container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.sp__anh {
+    width: 19%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid gray;
+}
+
+.sp__anh-display {
+    height: 90%;
+    aspect-ratio: 1/1;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.sp__info {
+    height: 100%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-right: 1px solid gray;
+    color: black;
+    text-indent: .5rem;
+}
+
+.sp__info-name {
+    font-size: 1.4rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 1000;
+    margin-top: .3rem;
+    width: 95%;
+    user-select: none;
+}
+
+.sp__info-gia {
+    color: var(--main-color);
+    font-size: 1.2rem;
+    user-select: none;
+
+}
+
+.sp__info-mota {
+    user-select: none;
+    width: 95%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: .9rem;
+}
+
+.sp__buttons {
+    width: 11%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    font-size: 2rem;
+}
+
+.sp__buttons-edit {
+    color: var(--new-color);
+    transition: .3s ease;
+}
+
+.sp__buttons-delete {
+    color: var(--error-color);
+    transition: .3s ease;
+}
+
+.sp__buttons-edit:hover {
+    color: var(--new-hover);
+}
+
+.sp__buttons-delete:hover {
+    color: rgb(128, 0, 0);
+}
+
+.edit-sanpham {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+}
+
+.edit-sanpham .edit-sanpham__container {
+    background: var(--content-color);
+    width: 50rem;
+    height: 30rem;
+}
+
+.edit-sanpham__header {
+    width: 100%;
+    padding: .5rem 0;
+    color: gray;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.edit-sanpham__header .edit-sanpham__title {
+    font-size: 1.4rem;
+    text-indent: 1rem;
+    user-select: none;
+}
+
+.edit-sanpham__header .edit-sanpham__close {
+    font-size: 1.7rem;
+    margin-right: 1.5rem;
+    transition: .3s ease;
+    user-select: none;
+}
+
+.edit-sanpham__close:hover {
+    transform: scale(1.2);
+}
+
+.edit-sanpham__body {
+    display: flex;
+    justify-content: space-between;
+    margin-top: .5rem;
+    width: 95%;
+}
+
+.edit-sanpham-thongtin {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 70%;
+    margin-left: 1rem;
+}
+
+.edit-sanpham-anhbia {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.edit-sanpham-preview {
+    width: 80%;
+    aspect-ratio: 1/1;
+    border: 2px solid gray;
+}
+
+.edit-sanpham-anhbia__input {
+    width: 80%;
+    color: var(--main-color);
+    margin-top: .5rem;
+}
+
+.edit-sanpham-ten-san-pham {
+    background: var(--content-color);
+    border-bottom: 2px solid gray;
+    height: 40px;
+    font-size: 1.1rem;
+    color: black;
+    text-indent: .5rem;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-bottom: .5rem;
+}
+
+
+.edit-sanpham-gia-ban {
+    background: var(--content-color);
+    border-bottom: 2px solid gray;
+    height: 40px;
+    font-size: 1.1rem;
+    color: black;
+    text-indent: .5rem;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-bottom: .5rem;
+}
+
+.edit-sanpham-mo-ta {
+    background: var(--content-color);
+    border: 2px solid gray;
+    padding: .5rem;
+    resize: none;
+    width: 25rem;
+    height: 13rem;
+    font-size: 1.1rem;
+    color: black;
+    margin-top: .2rem;
+}
+
+.edit-sanpham-mo-ta:focus {
+    outline: none;
+}
+
+.edit-sanpham-error {
+    color: var(--error-color);
+    font-size: .8rem;
+    text-indent: .5rem;
+    user-select: none;
+}
+
+.edit-sanpham-done-button {
+    position: absolute;
+    background: var(--new-color);
+    width: 10rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    height: 2.5rem;
+    color: var(--content-color);
+    transition: .3s ease;
+    bottom: 0;
+    right: -1rem;
+    user-select: none;
+}
+
+.edit-sanpham-done-button:hover {
+    background: var(--new-hover);
+}
+
+.edit-sanpham-preview {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.add-the-loai {
+    display: flex;
+    flex-wrap: wrap;
+    background: rgb(221, 221, 221);
+    margin: 1rem 0;
+    position: relative;
+}
+
+.the-loai-button {
+    background: var(--main-color);
+    color: var(--content-color);
+    padding: .4rem;
+    user-select: none;
+    font-size: 1rem;
+    transition: .3s ease;
+}
+
+.the-loai-button:hover {
+    background: var(--main-hover-color);
+}
+
+.add-the-loai__dropbox {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    width: 10rem;
+    height: 10rem;
+    overflow-y: auto;
+    top: 100%;
+    z-index: 10;
+}
+
+.add-the-loai__dropbox::-webkit-scrollbar {
+    width: 5px;
+    display: block;
+    background: var(--main-color);
+}
+
+.add-the-loai__dropbox::-webkit-scrollbar-thumb {
+    background-color: var(--main-hover-color);
+    border-radius: 4px;
+}
+
+.add-the-loai__dropbox.dropdown-content::-webkit-scrollbar-track {
+    background: var(--main-color);
+}
+
+.add-cate-items {
+    width: 100%;
+    font-size: .8rem;
+    padding: .5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--main-color);
+    transition: .3s ease;
+    user-select: none;
+}
+
+.add-cate-items:hover {
+    background: var(--main-hover-color);
+}
+
+.add-cate__text {
+    text-indent: .5rem;
 }
