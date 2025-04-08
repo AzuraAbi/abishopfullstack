@@ -497,6 +497,42 @@ app.post("/api/themsanpham", upload.single('anh'), async (req, res) => {
     }
 })
 
+app.post("/api/capnhatsanpham", upload.single("file"), async (req, res) => {
+    const { userid, idmathang, ten, gia, mota, anhcu } = req.body
+    let file = anhcu
+
+    try {
+        if (req.file) {
+            const filename = `mathang-${userid}-${idmathang}.webp`
+            const filepath = `./uploads/${filename}`
+            const imageUrl = `/uploads/${filename}`
+
+            await sharp(req.file.buffer)
+                .resize(500)
+                .toFormat("webp")
+                .webp({ quality: 80 })
+                .toFile(filepath)
+
+            file = imageUrl
+
+            if (anhcu && anhcu !== imageUrl) {
+                const old = `.${anhcu}`
+                fs.unlinkSync(old)
+            }
+        }
+
+        const updateQuery = "UPDATE  mathang SET tenmathang = ?, giaban = ?, mota = ?, anhsanpham = ? WHERE idmathang = ?"
+
+        db.query(updateQuery, [ten, gia, mota, file, idmathang])
+
+        res.json({ status: true })
+    } catch (error) {
+        console.error('Lỗi khi cập nhật sản phẩm:', err);
+        res.status(500).json({ success: false, message: 'Lỗi server!' });
+
+    }
+})
+
 app.get("/getsanpham/:id", (req, res) => {
     const userId = req.params.id;
     const query = "SELECT * FROM mathang WHERE userid = ?"
@@ -553,7 +589,7 @@ app.get("/lay-thong-tin-san-pham/:id", (req, res) => {
             }
 
             console.log(toReturn)
-            
+
             res.json(toReturn)
         })
     })

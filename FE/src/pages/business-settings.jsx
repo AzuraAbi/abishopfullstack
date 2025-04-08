@@ -33,8 +33,9 @@ function BusinessSettings() {
 
     const [dssp, setDssp] = useState([])
 
-    const [cursp, setCursp] = useState(null)
+    const [sort_type, setSortType] = useState("")
 
+    
     const [danhMucList, setDanhMucList] = useState([]);
     const [choosedDanhmuc, setChoosedDanhmuc] = useState([])
     const [oTl, setOtl] = useState(false)
@@ -43,10 +44,12 @@ function BusinessSettings() {
         return /^\d+$/.test(str);
     }
 
+
     const sort = (sortType) => {
-        setSx(false)
+        setSortType(sortType)
     }
 
+    const [cursp, setCursp] = useState(null)
     const [eName, set_eName] = useState("")
     const [ePrice, set_ePrice] = useState("")
     const [eDesc, set_eDesc] = useState("")
@@ -54,6 +57,7 @@ function BusinessSettings() {
     const [ePics, set_ePics] = useState("")
     const [ePre, set_ePre] = useState("")
     const [eFile, set_eFile] = useState(null)
+    const [EoTl, setEOtl] = useState(false)
 
     const openEditSanpham = (idmathang) => {
         setCursp(idmathang)
@@ -64,6 +68,14 @@ function BusinessSettings() {
         set_ePics("")
         set_ePre("")
         set_eFile(null)
+        setE1(false)
+        setE2(false)
+        setE3(false)
+        setE4(false)
+        setErr1(false)
+        setErr2(false)
+        setErr3(false)
+        setErr4(false)
         const storedToken = localStorage.getItem("userToken")
 
         if (storedToken) {
@@ -80,6 +92,77 @@ function BusinessSettings() {
                     })
             } catch (error) {
                 console.error("Lỗi khi gửi yêu cầu:", error);
+            }
+        }
+    }
+
+    const completeEdit = async () => {
+        if (!eName) {
+            setE1(true)
+            setErr1("Vui lòng nhập tên sản phẩm")
+        } else {
+            setE1(false)
+        }
+
+        if (!ePrice) {
+            setE2(true)
+            setErr2("Vui lòng nhập giá bán sản phẩm")
+        } else {
+            if (isNumeric(ePrice)) {
+                setE2(false)
+            } else {
+                setE2(true)
+                setErr2("Vui lòng nhập đúng định dạng số")
+            }
+        }
+
+        if (!eDesc) {
+            setE3(true)
+            setErr3("Vui lòng nhập mô tả sản phẩm")
+        } else {
+            setE3(false)
+        }
+
+        if (!ePics) {
+            setE4(true)
+            setErr4("Vui lòng chọn ảnh cho sản phẩm")
+        } else {
+            setE4(false)
+        }
+
+        if (eName && ePrice && eDesc && ePics) {
+
+            const storedToken = localStorage.getItem("userToken")
+
+            if (storedToken) {
+                try {
+                    const decoded = jwtDecode(storedToken)
+                    const userId = decoded.id
+
+                    const formData = new FormData()
+
+                    formData.append("userid", userId)
+                    formData.append("idmathang", cursp)
+                    formData.append("ten", eName)
+                    formData.append("gia", ePrice)
+                    formData.append("mota", eDesc)
+                    formData.append("anhcu", ePics)
+                    formData.append("danhmuc", eCate)
+
+                    if(eFile) formData.append("file", eFile)
+
+                    const res = await axios.post('http://localhost:5000/api/capnhatsanpham', formData)
+
+                    if (res.data.status) {
+                        window.location.reload()
+                    } else {
+                        alert("Đã xảy ra lỗi")
+                        navigate("/")
+                    }
+
+                } catch (error) {
+                    console.error("Lỗi khi gửi yêu cầu:", error);
+                }
             }
         }
     }
@@ -182,6 +265,14 @@ function BusinessSettings() {
         }
     }
 
+    const handleEditCheck = (id) => {
+        if (eCate.includes(id)) {
+            set_eCate(prev => prev.filter(item => item !== id))
+        } else {
+            set_eCate(prev => [...prev, id])
+        }
+    }
+
     useEffect(() => {
         async function getDanhsach() {
             const storedToken = localStorage.getItem("userToken")
@@ -260,7 +351,7 @@ function BusinessSettings() {
 
                             <div className="add-the-loai" onMouseLeave={() => setOtl(false)}>
                                 <div className="the-loai-button" onMouseEnter={() => setOtl(true)}>Thể loại</div>
-                                <div className="add-the-loai__dropbox" style={{ opacity: oTl ? 1 : 0 }}>
+                                <div className="add-the-loai__dropbox" style={{ opacity: oTl ? 1 : 0, display: oTl ? "flex" : "none" }}>
                                     {
                                         danhMucList.map(cate => (
                                             <div key={cate.idDanhmuc} className="add-cate-items" onClick={() => handleCheck(cate.idDanhmuc)}>
@@ -362,6 +453,28 @@ function BusinessSettings() {
                                 onChange={(e) => set_ePrice(e.target.value)}
                             />
 
+                            <div className="edit-the-loai" onMouseLeave={() => setEOtl(false)}>
+                                <div className="edit-the-loai-button" onMouseEnter={() => setEOtl(true)}>Thể loại</div>
+                                <div className="edit-the-loai__dropbox" style={{ opacity: EoTl ? 1 : 0, display: EoTl ? "flex" : "none" }}>
+                                    {
+                                        danhMucList.map(cate => (
+                                            <div key={cate.idDanhmuc} className="edit-cate-items" onClick={() => handleEditCheck(cate.idDanhmuc)}>
+                                                <div className="edit-cate__text">
+                                                    {cate.tenDanhmuc}
+                                                </div>
+
+                                                <div
+                                                    className="edit-cate__check"
+                                                    style={{ opacity: eCate.includes(cate.idDanhmuc) ? 1 : 0 }}
+                                                >
+                                                    ✓
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
                             <div
                                 className="edit-sanpham-error"
                                 style={{ opacity: e3 ? 1 : 0 }}
@@ -372,12 +485,12 @@ function BusinessSettings() {
                                 className="edit-sanpham-mo-ta"
                                 placeholder="Mô tả sản phẩm.."
                                 value={eDesc}
-                                onChange={(e) => eDesc(e.target.value)}
+                                onChange={(e) => set_eDesc(e.target.value)}
                             ></textarea>
                         </div>
 
                         <div className="edit-sanpham-anhbia">
-                            <div className="edit-sanpham-preview" style={{ backgroundImage: ePre ? `url(${ePre})` :`url(http://localhost:5000${ePics})` }}>
+                            <div className="edit-sanpham-preview" style={{ backgroundImage: ePre ? `url(${ePre})` : `url(http://localhost:5000${ePics})` }}>
 
                             </div>
 
@@ -395,7 +508,7 @@ function BusinessSettings() {
                                 {err4 ? err4 : "Vui lòng nhập đầy đủ thông tin"}
                             </div>
 
-                            <div className="edit-sanpham-done-button" onClick={() => createNew()}>
+                            <div className="edit-sanpham-done-button" onClick={() => completeEdit()}>
                                 Hoàn tất chỉnh sửa
                             </div>
                         </div>
@@ -471,12 +584,12 @@ function BusinessSettings() {
                                             Z - A
                                         </div>
 
-                                        <div className="business-sort__dropbox-items" onClick={() => sort("TG")}>
-                                            Thời gian
+                                        <div className="business-sort__dropbox-items" onClick={() => sort("MA")}>
+                                            Mới - Cũ
                                         </div>
 
-                                        <div className="business-sort__dropbox-items" onClick={() => sort("SL")}>
-                                            Số lượng bán
+                                        <div className="business-sort__dropbox-items" onClick={() => sort("CM")}>
+                                            Cũ - Mới
                                         </div>
 
                                     </div>
@@ -486,7 +599,19 @@ function BusinessSettings() {
                             <div className="business__body">
                                 <div className="business-items">
 
-                                    {dssp.map((sp) => (
+                                    {dssp
+                                    .sort((a, b) => {
+                                        if(sort_type === "AZ") {
+                                            return a.tenmathang.localeCompare(b.tenmathang)
+                                        } else if(sort_type === "ZA") {
+                                            return b.tenmathang.localeCompare(a.tenmathang)
+                                        } else if(sort_type === "CM") {
+                                            return b.idmathang - a.idmathang
+                                        } else if(sort_type === "MC") {
+                                            return a.idmathang - b.idmathang
+                                        }
+                                    })
+                                    .map((sp) => (
                                         <div className="sanpham" key={sp.idmathang}>
                                             <div className="sp__container">
                                                 <div className="sp__anh">
