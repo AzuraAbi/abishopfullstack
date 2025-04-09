@@ -1,0 +1,37 @@
+:root {
+    --main-color: rgb(70, 126, 210);
+    --main-hover-color: rgb(27, 64, 120);
+    --body-color: rgb(231, 231, 231);
+    --content-color: rgb(255, 255, 255);
+    --shadow: 0 0 5px 1px black;
+    --category-main-color: gray;
+    --category-focus-color: rgb(76, 76, 76);
+    --category-hover-color: rgb(224, 224, 224);
+    --error-color: rgb(255, 85, 85);
+    --new-color: rgb(64, 226, 94);
+    --new-hover: rgb(37, 164, 60);
+    --search-bar-btn-color: rgb(224, 224, 224);
+    --search-bar-btn-hover: rgb(158, 158, 158);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: "Varela Round", sans-serif;
+    text-decoration: none;
+    scroll-behavior: smooth;
+}
+
+input:focus {
+    outline: none;
+}
+
+body {
+    background: var(--body-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

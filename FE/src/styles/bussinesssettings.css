@@ -10,8 +10,8 @@
 }
 
 :root {
-    --main-color: rgb(255, 103, 42);
-    --main-hover-color: rgb(168, 60, 18);
+    --main-color: rgb(70, 126, 210);
+    --main-hover-color: rgb(27, 64, 120);
     --body-color: rgb(231, 231, 231);
     --content-color: rgb(255, 255, 255);
     --shadow: 0 0 5px 1px black;
@@ -429,10 +429,11 @@ body {
 .sp__info-mota {
     user-select: none;
     width: 95%;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: .9rem;
+    text-indent: 0;
+    margin-left: .5rem;
 }
 
 .sp__buttons {

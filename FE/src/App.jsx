@@ -8,9 +8,11 @@ import ChangeUsername from "./pages/changeusername"
 import ChangeEmail from "./pages/changeemail"
 import ChangePhone from "./pages/changephone"
 import ChangePassword from "./pages/changepassword"
-
 import BusinessSettings from "./pages/business-settings"
 import HelpSettings from "./pages/help-settings"
+import ThongTinSanPham from "./pages/sanpham";
+
+import "./styles/root.css"
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
         <Route path="/security-settings/change-password" element={<ChangePassword />} />
         <Route path="/business-settings" element={<BusinessSettings />} />
         <Route path="/help-settings" element={<HelpSettings />} />
+        <Route path="/san-pham/:slug" element={<ThongTinSanPham />} />
       </Routes>
     </Router>
   );

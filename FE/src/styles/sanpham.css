@@ -1,0 +1,230 @@
+.san-pham-page {
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.san-pham__container {
+    width: 95%;
+    background: var(--content-color);
+    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.san-pham__title {
+    color: var(--main-color);
+    border-bottom: 3px solid var(--main-color);
+    margin: .5rem 0;
+    padding-bottom: .5rem;
+    width: 100%;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.san-pham__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.san-pham__thong-tin {
+    display: flex;
+    justify-content: space-evenly;
+    width: 95%;
+}
+
+.san-pham__anh {
+    width: 30rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.san-pham__pics {
+    width: 90%;
+    aspect-ratio: 1/1;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid var(--main-color);
+}
+
+.san-pham__info {
+    background: transparent;
+    width: 50rem;
+    margin-left: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.san-pham__ten-san-pham {
+    width: 100%;
+    color: black;
+    font-size: 2rem;
+    text-align: left;
+}
+
+.san-pham__gia-ban {
+    color: var(--main-color);
+    font-size: 1.5rem;
+    width: 100%;
+    text-align: left;
+    margin-top: .5rem;
+}
+
+.san-pham__gia-ban span {
+    color: black;
+    font-size: 1.7rem;
+    user-select: none;
+}
+
+.san-pham__nguoi-ban {
+    color: var(--main-color);
+    font-size: 1.2rem;
+    width: 100%;
+    text-align: left;
+    margin-top: .5rem;
+}
+
+.san-pham__nguoi-ban span {
+    color: black;
+    font-size: 1.4rem;
+    user-select: none;
+}
+
+.san-pham__mo-ta {
+    color: var(--main-color);
+    font-size: 1.2rem;
+    width: 100%;
+    text-align: left;
+    margin-top: .7rem;
+    height: 11rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+.san-pham__mo-ta span {
+    color: black;
+    font-size: 1.3rem;
+    user-select: none;
+}
+
+.san-pham__buttons {
+    display: flex;
+    justify-content: right;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+.san-pham__gio-hang {
+    background: var(--new-color);
+    transition: .3s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--content-color);
+    height: 3rem;
+    padding: 0 .5rem;
+    border-radius: 5px;
+    font-size: 1.1rem;
+}
+
+.san-pham__mua-ngay {
+    background: var(--main-color);
+    transition: .3s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--content-color);
+    margin-left: 1rem;
+    height: 3rem;
+    padding: 0 1rem;
+    border-radius: 5px;
+}
+
+.san-pham__gio-hang .icon {
+    margin-right: .5rem;
+    font-size: 1.6rem;
+}
+
+.san-pham__mua-ngay .icon {
+    margin-right: .5rem;
+    font-size: 1.6rem;
+}
+
+.san-pham__gio-hang:hover {
+    background: var(--new-hover);
+}
+
+.san-pham__mua-ngay:hover {
+    background: var(--main-hover-color);
+}
+
+.san-pham__gal {
+    width: 90%;
+    height: 5rem;
+    margin-top: .5rem;
+    overflow: hidden;
+    display: flex;
+    border: 2px solid var(--main-color);
+}
+
+.san-pham__gal-items {
+    margin-right: .4rem;
+    height: inherit;
+    aspect-ratio: 1/1;
+    border: 1px solid var(--main-color);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.san-pham__gal-items-delete {
+    color: var(--content-color);
+    position: absolute;
+    right: .1rem;
+    background: rgba(0, 0, 0, 0.287);
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    transition: .3s ease;
+    user-select: none;
+}
+
+.san-pham__gal-items-delete:hover {
+    background: black;
+}
+
+.san-pham__gal-items-add {
+    height: inherit;
+    aspect-ratio: 1/1;
+    border: 1px solid var(--main-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: gray;
+    user-select: none;
+    transition: .3s ease;
+}
+
+.san-pham__gal-items-add:hover {
+    font-size: 3.5rem;
+}

@@ -1,10 +1,10 @@
 :root {
-    --main-color: rgb(255, 103, 42);
+    --main-color: rgb(70, 126, 210);
+    --main-hover-color: rgb(27, 64, 120);
     --text-color: rgb(255, 255, 255);
     --search-bar-btn-color: rgb(224, 224, 224);
     --search-bar-btn-hover: rgb(158, 158, 158);
-    --second-color: rgb(205, 94, 50);
-    --hover-color: rgb(135, 54, 24);
+    --second-color: rgb(10, 82, 190);
 }
 
 ::-webkit-scrollbar {
@@ -142,7 +142,7 @@ body {
 }
 
 .danhmuc__container .danhmuc__button:hover {
-    background: var(--hover-color);
+    background: var(--main-hover-color);
 }
 
 .danhmuc__button .icon {
@@ -168,7 +168,7 @@ body {
 }
 
 .nav__account:hover .account__container {
-    background: var(--hover-color);
+    background: var(--main-hover-color);
 }
 
 .account__container .account__button {
@@ -209,7 +209,7 @@ body {
 }
 
 .account__dropbox:hover ~ .account__container {
-    background: var(--hover-color);
+    background: var(--main-hover-color);
 }
 
 .account__dropbox-item {
@@ -223,7 +223,7 @@ body {
 }
 
 .account__dropbox-item:hover {
-    background: var(--hover-color);
+    background: var(--main-hover-color);
     border: 0;
 }
 

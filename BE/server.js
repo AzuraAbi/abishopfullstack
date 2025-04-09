@@ -595,4 +595,56 @@ app.get("/lay-thong-tin-san-pham/:id", (req, res) => {
     })
 })
 
+app.get("/xoa-san-pham/:id", (req, res) => {
+    const idmathang = req.params.id
+
+    const query = "DELETE FROM mathang WHERE idmathang = ?"
+
+    db.query(query, [idmathang], (err, result) => {
+        if (err) {
+            return res.status(500).json({ status: false })
+        }
+
+        res.json({ status: true })
+    })
+})
+
+app.get("/goi-y-san-pham", async (req, res) => {
+    try {
+        const query1 = "SELECT m.*, n.username FROM mathang m JOIN users n ON m.userid = n.userid ORDER BY RAND() LIMIT 35"
+
+        db.query(query1, (err, result) => {
+            if (err) {
+                console.error('Lỗi khi truy vấn sản phẩm ngẫu nhiên:', err);
+                return res.status(500).json({ success: false, message: 'Lỗi truy vấn CSDL' });
+            }
+
+
+            res.json({ success: true, data: result })
+        })
+
+    } catch (error) {
+        console.error('Lỗi khi lấy sản phẩm ngẫu nhiên:', err);
+        res.status(500).json({ success: false, message: 'Lỗi server!' });
+    }
+})
+
+app.get("/lay-thong-tin-chi-tiet-san-pham/:id", async (req, res) => {
+    const idmathang = req.params.id
+    console.log("idmathang: ". idmathang)
+    try {
+        const query = "SELECT m.*, n.username FROM mathang m JOIN users n ON m.userid = n.userid WHERE m.idmathang = ?"
+
+        db.query(query, [idmathang], (err, result) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: "Lỗi truy vấn CSDL" })
+            }
+            res.json({ succes: true, data: result[0] })
+        })
+    } catch (error) {
+        console.error('Lỗi khi lấy sản phẩm ngẫu nhiên:', err);
+        res.status(500).json({ success: false, message: 'Lỗi server!' });
+    }
+})
+
 app.listen(PORT, () => console.log(`🚀 Server chạy tại http://localhost:${PORT}`))

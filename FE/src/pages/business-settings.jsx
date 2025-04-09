@@ -35,7 +35,7 @@ function BusinessSettings() {
 
     const [sort_type, setSortType] = useState("")
 
-    
+
     const [danhMucList, setDanhMucList] = useState([]);
     const [choosedDanhmuc, setChoosedDanhmuc] = useState([])
     const [oTl, setOtl] = useState(false)
@@ -47,6 +47,30 @@ function BusinessSettings() {
 
     const sort = (sortType) => {
         setSortType(sortType)
+        setSx(false)
+    }
+
+    async function getDanhsach() {
+        const storedToken = localStorage.getItem("userToken")
+
+        if (storedToken) {
+            try {
+                const decoded = jwtDecode(storedToken)
+                const userId = decoded.id
+
+                fetch(`http://localhost:5000/getsanpham/${userId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status) {
+                            console.log(data.value)
+                            setDssp(data.value)
+                        }
+                    })
+                    .catch(err => console.log(err("Lỗi lấy user: ", err)));
+            } catch (error) {
+                console.error("Lỗi giải mã token: ", error)
+            }
+        }
     }
 
     const [cursp, setCursp] = useState(null)
@@ -58,6 +82,28 @@ function BusinessSettings() {
     const [ePre, set_ePre] = useState("")
     const [eFile, set_eFile] = useState(null)
     const [EoTl, setEOtl] = useState(false)
+
+    const handleDelete = (idmathang) => {
+        const storedToken = localStorage.getItem("userToken")
+
+        if (storedToken) {
+            try {
+                fetch(`http://localhost:5000/xoa-san-pham/${idmathang}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.status) {
+                            getDanhsach()
+                        } else {
+                            alert("Đã xảy ra lỗi")   
+                            window.location.reload()
+                        }
+                    })
+            } catch (error) {
+                console.error("Lỗi khi gửi yêu cầu:", error);
+
+            }
+        }
+    }
 
     const openEditSanpham = (idmathang) => {
         setCursp(idmathang)
@@ -149,7 +195,7 @@ function BusinessSettings() {
                     formData.append("anhcu", ePics)
                     formData.append("danhmuc", eCate)
 
-                    if(eFile) formData.append("file", eFile)
+                    if (eFile) formData.append("file", eFile)
 
                     const res = await axios.post('http://localhost:5000/api/capnhatsanpham', formData)
 
@@ -274,28 +320,7 @@ function BusinessSettings() {
     }
 
     useEffect(() => {
-        async function getDanhsach() {
-            const storedToken = localStorage.getItem("userToken")
 
-            if (storedToken) {
-                try {
-                    const decoded = jwtDecode(storedToken)
-                    const userId = decoded.id
-
-                    fetch(`http://localhost:5000/getsanpham/${userId}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.status) {
-                                console.log(data.value)
-                                setDssp(data.value)
-                            }
-                        })
-                        .catch(err => console.log(err("Lỗi lấy user: ", err)));
-                } catch (error) {
-                    console.error("Lỗi giải mã token: ", error)
-                }
-            }
-        }
 
         axios.get("http://localhost:5000/danhmuc")
             .then((response) => {
@@ -574,7 +599,7 @@ function BusinessSettings() {
                                         Sắp xếp
                                     </div>
 
-                                    <div className="business-sort__dropbox" style={{ opacity: sx ? 1 : 0 }}>
+                                    <div className="business-sort__dropbox" style={{ opacity: sx ? 1 : 0, display: sx ? "block" : "none" }}>
 
                                         <div className="business-sort__dropbox-items" onClick={() => sort("AZ")}>
                                             A - Z
@@ -584,7 +609,7 @@ function BusinessSettings() {
                                             Z - A
                                         </div>
 
-                                        <div className="business-sort__dropbox-items" onClick={() => sort("MA")}>
+                                        <div className="business-sort__dropbox-items" onClick={() => sort("MC")}>
                                             Mới - Cũ
                                         </div>
 
@@ -600,58 +625,58 @@ function BusinessSettings() {
                                 <div className="business-items">
 
                                     {dssp
-                                    .sort((a, b) => {
-                                        if(sort_type === "AZ") {
-                                            return a.tenmathang.localeCompare(b.tenmathang)
-                                        } else if(sort_type === "ZA") {
-                                            return b.tenmathang.localeCompare(a.tenmathang)
-                                        } else if(sort_type === "CM") {
-                                            return b.idmathang - a.idmathang
-                                        } else if(sort_type === "MC") {
-                                            return a.idmathang - b.idmathang
-                                        }
-                                    })
-                                    .map((sp) => (
-                                        <div className="sanpham" key={sp.idmathang}>
-                                            <div className="sp__container">
-                                                <div className="sp__anh">
-                                                    <div
-                                                        className="sp__anh-display"
-                                                        style={{ backgroundImage: `url(http://localhost:5000${sp.anhsanpham})` }}
-                                                    >
+                                        .sort((a, b) => {
+                                            if (sort_type === "AZ") {
+                                                return a.tenmathang.localeCompare(b.tenmathang)
+                                            } else if (sort_type === "ZA") {
+                                                return b.tenmathang.localeCompare(a.tenmathang)
+                                            } else if (sort_type === "CM") {
+                                                return b.idmathang - a.idmathang
+                                            } else if (sort_type === "MC") {
+                                                return a.idmathang - b.idmathang
+                                            }
+                                        })
+                                        .map((sp) => (
+                                            <div className="sanpham" key={sp.idmathang}>
+                                                <div className="sp__container">
+                                                    <div className="sp__anh">
+                                                        <div
+                                                            className="sp__anh-display"
+                                                            style={{ backgroundImage: `url(http://localhost:5000${sp.anhsanpham})` }}
+                                                        >
 
-                                                    </div>
-                                                </div>
-
-                                                <div className="sp__info">
-                                                    <div className="sp__info-name">
-                                                        {sp.tenmathang}
-                                                    </div>
-                                                    <div className="sp__info-gia">
-                                                        {sp.giaban.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
-                                                    </div>
-                                                    <div className="sp__info-mota">
-                                                        <span style={{ color: "gray" }}>Mô tả sản phẩm: </span>{sp.mota}
-                                                    </div>
-                                                </div>
-
-                                                <div className="sp__buttons">
-                                                    <div className="sp__buttons-edit" onClick={() => {
-
-                                                        openEditSanpham(sp.idmathang)
-                                                        setBlack(true)
-                                                    }}>
-                                                        <IonIcon icon={create}></IonIcon>
+                                                        </div>
                                                     </div>
 
-                                                    <div className="sp__buttons-delete">
-                                                        <IonIcon icon={trash}></IonIcon>
+                                                    <div className="sp__info">
+                                                        <div className="sp__info-name">
+                                                            {sp.tenmathang}
+                                                        </div>
+                                                        <div className="sp__info-gia">
+                                                            {sp.giaban.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                                        </div>
+                                                        <div className="sp__info-mota">
+                                                            <span style={{ color: "gray" }}>Mô tả sản phẩm: </span>{sp.mota}
+                                                        </div>
+                                                    </div>
 
+                                                    <div className="sp__buttons">
+                                                        <div className="sp__buttons-edit" onClick={() => {
+
+                                                            openEditSanpham(sp.idmathang)
+                                                            setBlack(true)
+                                                        }}>
+                                                            <IonIcon icon={create}></IonIcon>
+                                                        </div>
+
+                                                        <div className="sp__buttons-delete" onClick={() => handleDelete(sp.idmathang)}>
+                                                            <IonIcon icon={trash}></IonIcon>
+
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
 
 
                                 </div>

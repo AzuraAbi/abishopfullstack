@@ -62,7 +62,7 @@ function Navbar() {
   }
 
   const handleSettings = () => {
-
+    navigate("/security-settings")
   }
 
   const handleLogout = () => {
@@ -70,6 +70,7 @@ function Navbar() {
     localStorage.removeItem("userData")
     setUser(null)
     navigate("/")
+    window.location.reload()
   }
 
   const handleToLogin = () => {
@@ -106,7 +107,7 @@ function Navbar() {
 
         <div className="nav__account" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
           <div className="account__container">
-            <div className="account__button">
+            <div className="account__button" onClick={() => handleInfo()}>
               <span className="account__username">{user?.username || "Guest"}</span>
               <IonIcon className="icon" icon={personCircle}></IonIcon>
             </div>
