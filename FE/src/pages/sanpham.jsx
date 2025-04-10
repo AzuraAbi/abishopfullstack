@@ -5,6 +5,7 @@ import "../styles/sanpham.css"
 import { jwtDecode } from 'jwt-decode';
 import { IonIcon } from '@ionic/react';
 import { cart, card } from 'ionicons/icons';
+import axios from 'axios';
 
 function ThongTinSanPham() {
     const { slug } = useParams();
@@ -14,6 +15,88 @@ function ThongTinSanPham() {
     const [atb, setAtb] = useState([])
     const [pre, setPre] = useState("")
     const [opa, setOpa] = useState(false)
+    const [filetoadd, setFiletoadd] = useState(null)
+    const [curId, setCurId] = useState(0)
+    const [hoverid, setHoverid] = useState(null)
+
+    async function addNew() {
+        if (!filetoadd) alert("Chưa chọn ảnh")
+        else {
+            const storedToken = localStorage.getItem("userToken")
+
+            if (storedToken) {
+                try {
+                    const decoded = jwtDecode(storedToken)
+                    const userId = decoded.id
+
+                    const formData = new FormData()
+                    formData.append("image", filetoadd)
+                    formData.append("idmathang", id)
+
+                    const res = await axios.post("http://localhost:5000/upload-preview-image", formData, {
+                        headers: { "Content-Type": "multipart/form-data" },
+                    });
+
+                    if (res.data.status) {
+                        setOpa(false)
+                        setAtb(prev => [...prev, res.data.data])
+                    } else {
+                        alert("Đã xảy ra lỗi")
+                        window.location.reload()
+                    }
+
+                } catch (error) {
+                    console.error("Lỗi giải mã token:", error);
+                    window.location.reload()
+
+                }
+            } else {
+                window.location.reload()
+            }
+        }
+    }
+
+    async function handleDeletePreview(idmathang, previewid) {
+
+
+
+        const storedToken = localStorage.getItem("userToken")
+
+        if (storedToken) {
+            try {
+
+                const formData = new FormData()
+                formData.append("idmathang", idmathang)
+                formData.append("previewid", previewid)
+
+                fetch("http://localhost:5000/xoa-anh-preview", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ idmathang, previewid })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status) {
+                            setAtb(prev => prev.filter(anh => anh.previewid !== previewid))
+                            if (previewid === curId) {
+                                setCurId(0)
+                                setPre(null)
+                            }
+                        }
+
+                    })
+
+
+            } catch (error) {
+                console.error("Lỗi giải mã token:", error);
+            }
+
+        } else {
+            window.location.reload()
+        }
+    }
 
     useEffect(() => {
         async function ttsp() {
@@ -40,7 +123,31 @@ function ThongTinSanPham() {
             }
         }
 
+        async function getPre() {
+            const storedToken = localStorage.getItem("userToken")
+
+            if (storedToken) {
+                try {
+                    const decoded = jwtDecode(storedToken)
+                    const userId = decoded.id
+
+                    fetch(`http://localhost:5000/lay-hinh-anh-hien-thi/${id}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status) {
+                                setAtb(data.data)
+                            }
+                        });
+
+                } catch (error) {
+                    console.error("Lỗi giải mã token:", error);
+                }
+            }
+
+        }
+
         ttsp()
+        getPre()
     }, [])
 
     if (!sp) return <div>Đang tải...</div>
@@ -60,15 +167,15 @@ function ThongTinSanPham() {
                             Thêm ảnh sản phẩm
                         </div>
 
-                        <div className="them-anh__close">
+                        <div className="them-anh__close" onClick={() => setOpa(false)}>
                             X
                         </div>
                     </div>
 
                     <div className="them-anh__body">
-                        <input type="file" className="them-anh__file" />
+                        <input type="file" className="them-anh__file" onChange={(e) => setFiletoadd(e.target.files[0])} />
 
-                        <div className="them-anh__submit">Thêm ảnh mới</div>
+                        <div className="them-anh__submit" onClick={() => addNew()}>Thêm ảnh mới</div>
                     </div>
                 </div>
             </div>
@@ -104,18 +211,70 @@ function ThongTinSanPham() {
                                 ></div>
 
                                 <div className="san-pham__gal">
-                                    <div className="san-pham__gal-items" style={{ backgroundImage: `url(http://localhost:5000${sp.anhsanpham})` }}></div>
-                                    {atb.map((a) => (
-                                        <div className="san-pham__gal-items">
-                                            <div className="san-pham__gal-items-delete" style={{ display: author ? "flex" : "none" }}>
-                                                X
+
+                                    <div className="san-pham__gal-container">
+
+
+                                        <div
+                                            className="san-pham__gal-items"
+                                        >
+                                            <div
+                                                className="san-pham__gal-items-image"
+                                                style={{
+                                                    backgroundImage: `url(http://localhost:5000${sp.anhsanpham})`,
+                                                    opacity: (pre == sp.anhsanpham) ? 1 : ((hoverid === 0) ? 1 : .5),
+                                                    transition: ".3s ease"
+                                                }}
+                                                onClick={() => {
+                                                    setPre(sp.anhsanpham)
+                                                    setCurId(0)
+                                                }}
+
+                                                onMouseEnter={() => {
+                                                    setHoverid(0)
+                                                }}
+
+                                                onMouseLeave={() => {
+                                                    setHoverid(null)
+                                                }}
+                                            >
                                             </div>
                                         </div>
-                                    ))}
-                                    <div className="san-pham__gal-items-add" onClick={() => {
-                                        setOpa(true)
-                                    }}>
-                                        +
+                                        {atb.map((a) => (
+                                            <div
+                                                key={a.previewid}
+                                                className="san-pham__gal-items"
+                                            >
+                                                <div
+                                                    className="san-pham__gal-items-image"
+                                                    style={{ 
+                                                        backgroundImage: `url(http://localhost:5000${a.preurl})`,
+                                                        opacity: (pre == a.preurl) ? 1 : ((hoverid === a.previewid) ? 1 : .5),
+                                                    transition: ".3s ease"
+                                                    }}
+
+                                                    onMouseEnter={() => {
+                                                        setHoverid(a.previewid)
+                                                    }}
+
+                                                    onMouseLeave={() => {
+                                                        setHoverid(null)
+                                                    }}
+                                                    onClick={() => {
+                                                        setPre(a.preurl)
+                                                        setCurId(a.previewid)
+                                                    }}
+                                                ></div>
+                                                <div className="san-pham__gal-items-delete" style={{ display: author ? "flex" : "none" }} onClick={() => handleDeletePreview(a.idmathang, a.previewid)}>
+                                                    X
+                                                </div>
+                                            </div>
+                                        ))}
+                                        <div className="san-pham__gal-items-add" style={{ display: author ? "flex" : "none" }} onClick={() => {
+                                            setOpa(true)
+                                        }}>
+                                            +
+                                        </div>
                                     </div>
                                 </div>
                             </div>

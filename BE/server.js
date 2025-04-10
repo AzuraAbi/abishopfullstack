@@ -82,7 +82,6 @@ app.get("/", (req, res) => {
 
 app.get("/api/user/:id", (req, res) => {
     const userId = req.params.id;
-    console.log(userId)
     const sql = "SELECT username FROM users WHERE userid = ?";
 
     db.query(sql, [userId], (err, results) => {
@@ -291,7 +290,6 @@ app.get("/getMota/:id", (req, res) => {
 app.post("/api/updateDesc", (req, res) => {
     const { userId, description } = req.body
 
-    console.log(userId, description)
 
     const queryCheck = "SELECT * FROM mota WHERE userid = ?"
 
@@ -453,15 +451,14 @@ app.post("/api/themsanpham", upload.single('anh'), async (req, res) => {
     const { userid, ten, gia, mota, danhmuc } = req.body
     const anh = req.file
 
-    console.log(req.body)
 
-    const countQuery = "SELECT COUNT(*) AS total FROM mathang WHERE userid = ?"
+    const countQuery = "SELECT * FROM mathang WHERE userid = ? ORDER BY idmathang DESC LIMIT 1"
 
     try {
         db.query(countQuery, [userid], async (err, result) => {
             if (err) return res.status(500).json({ status: false, error: err.message });
 
-            const sothutu = result[0].total + 1
+            const sothutu = result[0].idmathang + 1
             const webpFilename = `mathang-${userid}-${sothutu}.webp`
             const webpPath = `./uploads/${webpFilename}`
             const imageUrl = `/uploads/${webpFilename}`
@@ -492,7 +489,6 @@ app.post("/api/themsanpham", upload.single('anh'), async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error)
         res.status(500).json({ error: 'Lỗi xử lý ảnh hoặc lưu sản phẩm' });
     }
 })
@@ -554,7 +550,6 @@ app.get("/lay-thong-tin-san-pham/:id", (req, res) => {
     const idsp = req.params.id
 
     const query1 = "SELECT * FROM mathang WHERE idmathang = ?"
-    console.log(idsp)
 
     db.query(query1, [idsp], (err, result) => {
         if (err) {
@@ -587,8 +582,6 @@ app.get("/lay-thong-tin-san-pham/:id", (req, res) => {
                 anh: anh,
                 danhmuc: danhmuc
             }
-
-            console.log(toReturn)
 
             res.json(toReturn)
         })
@@ -631,7 +624,6 @@ app.get("/goi-y-san-pham", async (req, res) => {
 
 app.get("/lay-thong-tin-chi-tiet-san-pham/:id", async (req, res) => {
     const idmathang = req.params.id
-    console.log("idmathang: ". idmathang)
     try {
         const query = "SELECT m.*, n.username FROM mathang m JOIN users n ON m.userid = n.userid WHERE m.idmathang = ?"
 
@@ -645,6 +637,87 @@ app.get("/lay-thong-tin-chi-tiet-san-pham/:id", async (req, res) => {
         console.error('Lỗi khi lấy sản phẩm ngẫu nhiên:', err);
         res.status(500).json({ success: false, message: 'Lỗi server!' });
     }
+})
+
+app.post("/upload-preview-image", upload.single("image"), async (req, res) => {
+    if (!req.file) return res.status(400).json({ message: "Không có file nào được chọn!" });
+    const { idmathang } = req.body
+
+    const anh = req.file
+
+
+    const countQuery = "SELECT COUNT(*) AS total FROM preview WHERE idmathang=?"
+
+    try {
+        db.query(countQuery, [idmathang], async (err, result) => {
+            if (err) return res.status(500).json({ status: false, error: err.message });
+
+            const sothutu = result[0].total + 1
+            const webpFilename = `preview-${idmathang}-${sothutu}.webp`
+            const webpPath = `./uploads/${webpFilename}`
+            const imageUrl = `/uploads/${webpFilename}`
+
+            await sharp(anh.buffer)
+                .resize(500)
+                .toFormat("webp")
+                .webp({ quality: 80 })
+                .toFile(webpPath)
+
+            const insertQuery = "INSERT INTO preview (idmathang, previewid, preurl) VALUE (?, ?, ?)"
+
+            db.query(insertQuery, [idmathang, sothutu, imageUrl], (e, r) => {
+                if (e) return res.status(500).json({ status: false, error: e.message });
+
+                const selQuery = "SELECT * FROM preview WHERE idmathang = ? AND previewid = ?"
+
+                db.query(selQuery, [idmathang, sothutu], (er, re) => {
+                    if (er) return res.status(500).json({ status: false, error: er.message });
+                    res.json({ status: true, data: re[0] })
+                })
+            })
+
+        })
+    } catch (error) {
+        res.status(500).json({ error: 'Lỗi xử lý ảnh hoặc lưu sản phẩm' });
+    }
+});
+
+app.get("/lay-hinh-anh-hien-thi/:id", async (req, res) => {
+    const idmathang = req.params.id
+
+    const query = "SELECT * FROM preview WHERE idmathang = ?"
+
+    db.query(query, [idmathang], (err, result) => {
+        if (err) return res.status(500).json({ status: false, error: err.message });
+
+        res.json({ status: true, data: result })
+    })
+})
+
+app.post("/xoa-anh-preview", async (req, res) => {
+    const { idmathang, previewid } = req.body
+
+    const delQuery = "SELECT * FROM preview WHERE idmathang = ? AND previewid = ?"
+    const query = "DELETE FROM preview WHERE idmathang = ? AND previewid = ?"
+
+    console.log(idmathang, previewid)
+
+    db.query(delQuery, [idmathang, previewid], (err, result) => {
+        if (err) return res.status(500).json({ status: false, error: err.message });
+
+        const anhcu = result[0].preurl
+        if (anhcu) {
+            const old = `.${anhcu}`
+
+            fs.unlinkSync(old)
+        }
+
+        db.query(query, [idmathang, previewid], (e, r) => {
+            if (e) return res.status(500).json({ status: false, error: e.message });
+
+            res.json({ status: true })
+        })
+    })
 })
 
 app.listen(PORT, () => console.log(`🚀 Server chạy tại http://localhost:${PORT}`))
